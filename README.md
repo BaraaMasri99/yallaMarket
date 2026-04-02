@@ -1,19 +1,17 @@
 🛒 YallaMarket (In Progress)
 
-YallaMarket is an Arabic-language full-stack online grocery platform built using the MERN stack. The project is currently under active development following Agile Scrum methodology, with sprint planning and task tracking managed through JIRA.
+YallaMarket is an Arabic-language full-stack online grocery platform built using the MERN stack.
+The project is currently under active development following Agile Scrum methodology, with sprint planning and task tracking managed through JIRA.
 
 🚀 Project Status
 
 🚧 This project is currently in development
 
-Implemented so far:
-
+✅ Implemented so far
 Basic project structure (MERN setup)
 Product browsing by category
 UI components for homepage and product display
-
-Planned features:
-
+🔜 Planned features
 User authentication system
 Shopping cart functionality
 Order placement system
@@ -35,7 +33,7 @@ Manage products and categories
 Control order statuses
 🧱 Software Engineering Process
 
-This project is being developed following a complete engineering workflow:
+This project follows a complete engineering workflow:
 
 📄 Requirements Documentation
 🧩 ERD Design
@@ -44,27 +42,28 @@ This project is being developed following a complete engineering workflow:
 📂 Project Structure
 YallaMarket/
 │
-├── client/ # Frontend (React)
-├── server/ # Backend (Node.js + Express)
-├── docs/ # ERD, UML, requirements
+├── client/          # Frontend (React)
+├── server/          # Backend (Node.js + Express)
+├── docs/            # ERD, UML, requirements
 └── README.md
 ⚙️ Getting Started
+1️⃣ Clone the repository
 git clone https://github.com/BaraaMasri99/yallaMarket
-cd yallamarket
-
-Then install dependencies:
-
+cd yallaMarket
+2️⃣ Install dependencies
 cd client && npm install
 cd ../server && npm install
 📈 Roadmap
-Project setup
-Homepage UI
-Authentication system
-Shopping cart
-Order system
-Admin dashboard
-Deployment
+ Project setup
+ Homepage UI
+ Authentication system
+ Shopping cart
+ Order system
+ Admin dashboard
+ Deployment
 👨‍💻 Authors
+Baraa Masri
+Hamed Bizreh
+Yehya Zayoud
 
-Baraa Masri & Hamed Bizreh & Yehya Zayoud
-Computer Science Apprenticeship Year 2 Students
+Computer Science Apprenticeship – Year 2
