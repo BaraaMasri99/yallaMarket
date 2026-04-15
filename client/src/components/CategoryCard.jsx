@@ -1,10 +1,13 @@
+import { Link } from 'react-router-dom';
+
 export default function CategoryCard({ category }) {
-  const { name, emoji, image, gradient } = category;
+  const { name, slug, emoji, image, gradient } = category;
   const hasImage = image && image.trim() !== '';
 
   return (
-    <article
-      className="group cursor-pointer overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-sm transition-all duration-300 hover:shadow-card hover:-translate-y-1"
+    <Link
+      to={`/category/${slug}`}
+      className="group block overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-sm transition-all duration-300 hover:shadow-card hover:-translate-y-1"
     >
       {/* Image / Placeholder */}
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -34,6 +37,6 @@ export default function CategoryCard({ category }) {
           {name}
         </h3>
       </div>
-    </article>
+    </Link>
   );
 }
