@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getProductById, getRelatedProducts } from '../services/productService';
 import { getCategoryById } from '../services/categoryService';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getDisplayName, getDisplayDescription, formatPrice } from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
 import ProductCard from '../components/ProductCard';
 import QuantitySelector from '../components/QuantitySelector';
-import { ShoppingCart, Check, ArrowRight, ArrowLeft } from 'lucide-react';
+import BackLink from '../components/BackLink';
+import Spinner from '../components/Spinner';
+import { ShoppingCart, Check } from 'lucide-react';
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -20,8 +23,6 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const BackArrow = locale === 'ar' ? ArrowRight : ArrowLeft;
 
   useEffect(() => {
     let cancelled = false;
@@ -55,18 +56,13 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     if (!product || !product.inStock) return;
+    // Add the product with the selected quantity in a single action
     for (let i = 0; i < qty; i++) addItem(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-stone-200 border-t-primary" />
-      </div>
-    );
-  }
+  if (loading) return <Spinner />;
 
   if (!product) {
     return (
@@ -76,9 +72,8 @@ export default function ProductPage() {
     );
   }
 
-  const displayName = locale === 'en' && product.nameEn ? product.nameEn : product.name;
-  const displayDesc =
-    locale === 'en' && product.descriptionEn ? product.descriptionEn : product.description;
+  const displayName = getDisplayName(product, locale);
+  const displayDesc = getDisplayDescription(product, locale);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
@@ -94,13 +89,11 @@ export default function ProductPage() {
 
       {/* Back link */}
       {category && (
-        <Link
+        <BackLink
           to={`/category/${category.slug}`}
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition hover:brightness-110"
-        >
-          <BackArrow size={16} />
-          {t('product.backToCategory')}
-        </Link>
+          label={t('product.backToCategory')}
+          className="mt-4"
+        />
       )}
 
       {/* Product details */}
@@ -136,7 +129,7 @@ export default function ProductPage() {
           {/* Price */}
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-black text-primary">
-              {product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </span>
             <span className="text-lg text-stone-500">{t('product.currency')}</span>
             <span className="text-sm text-stone-400">/ {product.unit}</span>

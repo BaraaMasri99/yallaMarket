@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getDisplayName, formatPrice } from '../utils/helpers';
 
 /**
  * Product card used in category pages and related products.
@@ -12,7 +13,7 @@ export default function ProductCard({ product }) {
   const { t, locale } = useLanguage();
   const [added, setAdded] = useState(false);
 
-  const displayName = locale === 'en' && product.nameEn ? product.nameEn : product.name;
+  const displayName = getDisplayName(product, locale);
 
   const handleAdd = (e) => {
     e.preventDefault(); // don't navigate
@@ -64,7 +65,7 @@ export default function ProductCard({ product }) {
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-1">
           <span className="text-base font-black text-stone-900">
-            {product.price.toFixed(2)}{' '}
+            {formatPrice(product.price)}{' '}
             <span className="text-xs font-medium text-stone-500">{t('product.currency')}</span>
           </span>
 

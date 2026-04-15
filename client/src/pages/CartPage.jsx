@@ -1,19 +1,15 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import Breadcrumb from '../components/Breadcrumb';
 import CartItem from '../components/CartItem';
-
-const DELIVERY_THRESHOLD = 100; // free delivery above this amount
+import OrderSummary from '../components/OrderSummary';
+import BackLink from '../components/BackLink';
 
 export default function CartPage() {
   const { items, totalItems, subtotal, clearCart } = useCart();
-  const { t, locale } = useLanguage();
-
-  const BackArrow = locale === 'ar' ? ArrowRight : ArrowLeft;
-  const deliveryFee = subtotal >= DELIVERY_THRESHOLD ? 0 : 10;
-  const grandTotal = subtotal + deliveryFee;
+  const { t } = useLanguage();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
@@ -54,62 +50,27 @@ export default function CartPage() {
 
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition hover:brightness-110"
-              >
-                <BackArrow size={16} />
-                {t('cart.continueShopping')}
-              </Link>
+              <BackLink to="/" label={t('cart.continueShopping')} />
               <button
                 type="button"
                 onClick={clearCart}
                 className="text-sm font-semibold text-red-500 transition hover:text-red-600"
               >
-                {t('cart.remove')} الكل
+                {t('cart.clearAll')}
               </button>
             </div>
           </div>
 
           {/* ── Order summary ── */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-3xl border border-stone-200/80 bg-white p-6 shadow-card">
-              <h2 className="text-lg font-bold text-stone-900 mb-5">
-                {t('checkout.orderSummary')}
-              </h2>
-
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-stone-600">
-                  <span>{t('cart.subtotal')}</span>
-                  <span className="font-bold text-stone-800">
-                    {subtotal.toFixed(2)} {t('product.currency')}
-                  </span>
-                </div>
-
-                <div className="flex justify-between text-stone-600">
-                  <span>{t('cart.delivery')}</span>
-                  <span className="font-bold text-stone-800">
-                    {deliveryFee === 0
-                      ? t('cart.deliveryFree')
-                      : `${deliveryFee.toFixed(2)} ${t('product.currency')}`}
-                  </span>
-                </div>
-
-                <div className="border-t border-stone-100 pt-3 flex justify-between">
-                  <span className="font-bold text-stone-900">{t('cart.grandTotal')}</span>
-                  <span className="text-lg font-black text-primary">
-                    {grandTotal.toFixed(2)} {t('product.currency')}
-                  </span>
-                </div>
-              </div>
-
+            <OrderSummary subtotal={subtotal}>
               <Link
                 to="/checkout"
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-stone-900 px-6 py-3.5 text-sm font-bold text-white shadow-card transition hover:bg-primary"
               >
                 {t('cart.checkout')}
               </Link>
-            </div>
+            </OrderSummary>
           </div>
         </div>
       )}

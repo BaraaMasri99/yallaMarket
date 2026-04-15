@@ -42,8 +42,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm leading-7 text-stone-400">
-              متجرك الإلكتروني الأول للتسوق اليومي. خضار طازجة، مخبوزات،
-              لحوم، وكل ما يحتاجه بيتك بضغطة زر.
+              {t('footer.description')}
             </p>
 
             {/* Socials */}

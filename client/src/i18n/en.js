@@ -42,6 +42,7 @@ const en = {
     sectionLabel: 'Browse Categories',
     sectionTitle: 'Choose what you need',
     productsCount: 'products',
+    emptyText: 'No products in this category yet',
   },
 
   // ── CTA ──
@@ -79,6 +80,7 @@ const en = {
     checkout: 'Proceed to Checkout',
     continueShopping: 'Continue Shopping',
     remove: 'Remove',
+    clearAll: 'Clear All',
     itemCount: 'items in your cart',
   },
 
@@ -114,6 +116,8 @@ const en = {
     newsletterText: 'Get the latest offers and discounts directly to your email.',
     emailPlaceholder: 'Your email',
     subscribe: 'Subscribe',
+    description:
+      'Your go-to online store for daily shopping. Fresh vegetables, bakery, meats, and everything your home needs at the tap of a button.',
     rights: 'All rights reserved.',
     madeWith: 'Made with ❤️ in Palestine',
     privacy: 'Privacy Policy',

@@ -1,6 +1,7 @@
 import { Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getDisplayName, formatPrice } from '../utils/helpers';
 import QuantitySelector from './QuantitySelector';
 
 /**
@@ -10,7 +11,7 @@ export default function CartItem({ item }) {
   const { removeItem, updateQty } = useCart();
   const { t, locale } = useLanguage();
 
-  const displayName = locale === 'en' && item.nameEn ? item.nameEn : item.name;
+  const displayName = getDisplayName(item, locale);
 
   return (
     <div className="flex items-start gap-4 rounded-2xl border border-stone-200/80 bg-white p-4 shadow-sm transition hover:shadow-card">
@@ -35,7 +36,7 @@ export default function CartItem({ item }) {
           />
 
           <span className="text-sm font-black text-stone-900 ms-auto">
-            {(item.price * item.qty).toFixed(2)} {t('product.currency')}
+            {formatPrice(item.price * item.qty)} {t('product.currency')}
           </span>
         </div>
       </div>

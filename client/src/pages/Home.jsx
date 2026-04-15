@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Clock3,
@@ -9,12 +10,22 @@ import {
 } from 'lucide-react';
 import CategoryCard from '../components/CategoryCard';
 import { useLanguage } from '../context/LanguageContext';
-import { categories } from '../../data/categories';
+import { getAllCategories } from '../services/categoryService';
 
 /* ─── component ─── */
 
 export default function Home() {
   const { t } = useLanguage();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const cats = await getAllCategories();
+      if (!cancelled) setCategories(cats);
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const highlights = [
     {

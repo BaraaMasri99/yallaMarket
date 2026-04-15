@@ -1,26 +1,20 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   CreditCard,
   Banknote,
   CheckCircle2,
-  ArrowRight,
-  ArrowLeft,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getDisplayName, formatPrice } from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
-
-const DELIVERY_THRESHOLD = 100;
+import OrderSummary from '../components/OrderSummary';
+import BackLink from '../components/BackLink';
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
   const { t, locale } = useLanguage();
-  const navigate = useNavigate();
-  const BackArrow = locale === 'ar' ? ArrowRight : ArrowLeft;
-
-  const deliveryFee = subtotal >= DELIVERY_THRESHOLD ? 0 : 10;
-  const grandTotal = subtotal + deliveryFee;
 
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [submitted, setSubmitted] = useState(false);
@@ -85,13 +79,7 @@ export default function CheckoutPage() {
       />
 
       {/* Back */}
-      <Link
-        to="/cart"
-        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition hover:brightness-110"
-      >
-        <BackArrow size={16} />
-        {t('cart.title')}
-      </Link>
+      <BackLink to="/cart" label={t('cart.title')} className="mt-4" />
 
       <h1 className="mt-4 text-3xl font-black text-stone-900">
         {t('checkout.title')}
@@ -160,50 +148,26 @@ export default function CheckoutPage() {
 
         {/* ── Order summary sidebar ── */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 rounded-3xl border border-stone-200/80 bg-white p-6 shadow-card">
-            <h2 className="text-lg font-bold text-stone-900 mb-5">
-              {t('checkout.orderSummary')}
-            </h2>
-
+          <OrderSummary subtotal={subtotal}>
             {/* Item list */}
-            <div className="max-h-60 space-y-3 overflow-y-auto pr-1">
-              {items.map((item) => {
-                const name = locale === 'en' && item.nameEn ? item.nameEn : item.name;
-                return (
-                  <div key={item.id} className="flex items-center gap-3 text-sm">
-                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                      <img src={item.image} alt={name} className="h-full w-full object-cover" />
-                    </div>
-                    <div className="flex-1 truncate text-stone-700">{name} × {item.qty}</div>
-                    <span className="font-bold text-stone-800">
-                      {(item.price * item.qty).toFixed(2)}
-                    </span>
+            <div className="mt-5 max-h-60 space-y-3 overflow-y-auto border-b border-stone-100 pb-4 mb-[-20px]">
+              {items.map((item) => (
+                <div key={item.id} className="flex items-center gap-3 text-sm">
+                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
+                    <img
+                      src={item.image}
+                      alt={getDisplayName(item, locale)}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-5 space-y-3 border-t border-stone-100 pt-4 text-sm">
-              <div className="flex justify-between text-stone-600">
-                <span>{t('cart.subtotal')}</span>
-                <span className="font-bold text-stone-800">
-                  {subtotal.toFixed(2)} {t('product.currency')}
-                </span>
-              </div>
-              <div className="flex justify-between text-stone-600">
-                <span>{t('cart.delivery')}</span>
-                <span className="font-bold text-stone-800">
-                  {deliveryFee === 0
-                    ? t('cart.deliveryFree')
-                    : `${deliveryFee.toFixed(2)} ${t('product.currency')}`}
-                </span>
-              </div>
-              <div className="border-t border-stone-100 pt-3 flex justify-between">
-                <span className="font-bold text-stone-900">{t('cart.grandTotal')}</span>
-                <span className="text-lg font-black text-primary">
-                  {grandTotal.toFixed(2)} {t('product.currency')}
-                </span>
-              </div>
+                  <div className="flex-1 truncate text-stone-700">
+                    {getDisplayName(item, locale)} × {item.qty}
+                  </div>
+                  <span className="font-bold text-stone-800">
+                    {formatPrice(item.price * item.qty)}
+                  </span>
+                </div>
+              ))}
             </div>
 
             <button
@@ -213,7 +177,7 @@ export default function CheckoutPage() {
               <CheckCircle2 size={18} />
               {t('checkout.placeOrder')}
             </button>
-          </div>
+          </OrderSummary>
         </div>
       </form>
 

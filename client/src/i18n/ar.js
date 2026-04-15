@@ -42,6 +42,7 @@ const ar = {
     sectionLabel: 'تصفّح الأقسام',
     sectionTitle: 'اختر القسم اللي بدك إياه',
     productsCount: 'منتج',
+    emptyText: 'لا توجد منتجات في هذا القسم بعد',
   },
 
   // ── CTA ──
@@ -79,6 +80,7 @@ const ar = {
     checkout: 'إتمام الشراء',
     continueShopping: 'متابعة التسوق',
     remove: 'إزالة',
+    clearAll: 'إزالة الكل',
     itemCount: 'منتجات في سلتك',
   },
 
@@ -114,6 +116,8 @@ const ar = {
     newsletterText: 'احصل على أحدث العروض والتخفيضات مباشرة في بريدك.',
     emailPlaceholder: 'بريدك الإلكتروني',
     subscribe: 'اشترك',
+    description:
+      'متجرك الإلكتروني الأول للتسوق اليومي. خضار طازجة، مخبوزات، لحوم، وكل ما يحتاجه بيتك بضغطة زر.',
     rights: 'جميع الحقوق محفوظة.',
     madeWith: 'صُنع بـ ❤️ في فلسطين',
     privacy: 'سياسة الخصوصية',

@@ -5,11 +5,12 @@ import { getProductsByCategory } from '../services/productService';
 import { useLanguage } from '../context/LanguageContext';
 import Breadcrumb from '../components/Breadcrumb';
 import ProductCard from '../components/ProductCard';
+import Spinner from '../components/Spinner';
 import { Package } from 'lucide-react';
 
 export default function CategoryPage() {
   const { slug } = useParams();
-  const { t, locale } = useLanguage();
+  const { t } = useLanguage();
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,13 +34,7 @@ export default function CategoryPage() {
     return () => { cancelled = true; };
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-stone-200 border-t-primary" />
-      </div>
-    );
-  }
+  if (loading) return <Spinner />;
 
   if (!category) {
     return (
@@ -90,7 +85,7 @@ export default function CategoryPage() {
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-stone-100 text-stone-400">
             <Package size={28} />
           </div>
-          <p className="text-stone-500">لا توجد منتجات في هذا القسم بعد</p>
+          <p className="text-stone-500">{t('categories.emptyText')}</p>
         </div>
       )}
 
