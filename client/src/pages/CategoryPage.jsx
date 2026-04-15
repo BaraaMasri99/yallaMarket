@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getCategoryBySlug } from '../services/categoryService';
 import { getProductsByCategory } from '../services/productService';
 import { useLanguage } from '../context/LanguageContext';
 import Breadcrumb from '../components/Breadcrumb';
 import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
-import { Package } from 'lucide-react';
+import BackLink from '../components/BackLink';
+import { Package, Home } from 'lucide-react';
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -38,8 +39,23 @@ export default function CategoryPage() {
 
   if (!category) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-20 text-center">
-        <p className="text-lg text-stone-500">{t('notFound.title')}</p>
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+        <div className="mt-16 flex flex-col items-center text-center">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-stone-100 text-stone-400">
+            <Package size={36} />
+          </div>
+          <h2 className="text-xl font-bold text-stone-700">{t('notFound.title')}</h2>
+          <p className="mt-2 max-w-md text-sm leading-7 text-stone-500">
+            {t('notFound.categoryText')}
+          </p>
+          <Link
+            to="/"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-stone-900 px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-primary"
+          >
+            <Home size={16} />
+            {t('notFound.backHome')}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -53,6 +69,9 @@ export default function CategoryPage() {
           { label: category.name },
         ]}
       />
+
+      {/* Back link */}
+      <BackLink to="/" label={t('cart.continueShopping')} className="mt-4" />
 
       {/* Category header */}
       <div className="mt-6 mb-8">
@@ -86,6 +105,7 @@ export default function CategoryPage() {
             <Package size={28} />
           </div>
           <p className="text-stone-500">{t('categories.emptyText')}</p>
+          <BackLink to="/" label={t('cart.browseCta')} className="mt-4" />
         </div>
       )}
 

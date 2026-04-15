@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getProductById, getRelatedProducts } from '../services/productService';
 import { getCategoryById } from '../services/categoryService';
 import { useCart } from '../context/CartContext';
@@ -10,7 +10,7 @@ import ProductCard from '../components/ProductCard';
 import QuantitySelector from '../components/QuantitySelector';
 import BackLink from '../components/BackLink';
 import Spinner from '../components/Spinner';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check, Home } from 'lucide-react';
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -48,16 +48,12 @@ export default function ProductPage() {
       setLoading(false);
     })();
 
-    // Scroll to top on product change
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
     return () => { cancelled = true; };
   }, [id]);
 
   const handleAddToCart = () => {
     if (!product || !product.inStock) return;
-    // Add the product with the selected quantity in a single action
-    for (let i = 0; i < qty; i++) addItem(product);
+    addItem(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
@@ -66,8 +62,23 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-20 text-center">
-        <p className="text-lg text-stone-500">{t('notFound.title')}</p>
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+        <div className="mt-16 flex flex-col items-center text-center">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-stone-100 text-stone-400">
+            <ShoppingCart size={36} />
+          </div>
+          <h2 className="text-xl font-bold text-stone-700">{t('notFound.title')}</h2>
+          <p className="mt-2 max-w-md text-sm leading-7 text-stone-500">
+            {t('notFound.productText')}
+          </p>
+          <Link
+            to="/"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-stone-900 px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-primary"
+          >
+            <Home size={16} />
+            {t('notFound.backHome')}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -116,10 +127,13 @@ export default function ProductPage() {
         <div className="flex flex-col gap-4">
           {/* Category tag */}
           {category && (
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-600 shadow-sm">
+            <Link
+              to={`/category/${category.slug}`}
+              className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-600 shadow-sm transition hover:border-primary hover:text-primary"
+            >
               <span>{category.emoji}</span>
               {category.name}
-            </span>
+            </Link>
           )}
 
           <h1 className="text-3xl font-black text-stone-900 leading-tight">

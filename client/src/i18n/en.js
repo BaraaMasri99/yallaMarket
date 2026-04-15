@@ -25,6 +25,8 @@ const en = {
       'Browse our diverse categories and order your favorite products quickly and easily. Fresh vegetables, bakery, meat, drinks, and more!',
     searchPlaceholder: 'Search for a product...',
     searchBtn: 'Search',
+    noResults: 'No categories match your search',
+    clearSearch: 'Clear search',
   },
 
   // ── Highlights ──
@@ -106,6 +108,9 @@ const en = {
     orderSuccess: 'Your order has been placed!',
     orderSuccessText: "Thank you! We'll contact you soon to confirm delivery.",
     backToHome: 'Back to Home',
+    fieldRequired: 'This field is required',
+    invalidPhone: 'Invalid phone number',
+    invalidEmail: 'Invalid email address',
   },
 
   // ── Footer ──
@@ -132,6 +137,8 @@ const en = {
   notFound: {
     title: 'Page Not Found',
     text: 'The page you are looking for does not exist or has been moved.',
+    productText: 'The product you are looking for does not exist or has been removed.',
+    categoryText: 'The category you are looking for does not exist or has been moved.',
     backHome: 'Back to Home',
   },
 

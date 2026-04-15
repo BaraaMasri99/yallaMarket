@@ -4,6 +4,7 @@ import {
   CreditCard,
   Banknote,
   CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -18,9 +19,53 @@ export default function CheckoutPage() {
 
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const requiredFields = ['firstName', 'lastName', 'phone', 'city', 'street'];
+
+  const validateField = (name, value) => {
+    if (requiredFields.includes(name) && !value.trim()) {
+      return t('checkout.fieldRequired');
+    }
+    if (name === 'phone' && value.trim() && !/^[0-9+\-\s()]{7,15}$/.test(value.trim())) {
+      return t('checkout.invalidPhone');
+    }
+    if (name === 'email' && value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+      return t('checkout.invalidEmail');
+    }
+    return '';
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const newErrors = {};
+    let hasError = false;
+
+    // Validate all required + special fields
+    for (const name of [...requiredFields, 'email']) {
+      const value = formData.get(name) || '';
+      const error = validateField(name, value);
+      if (error) {
+        newErrors[name] = error;
+        hasError = true;
+      }
+    }
+
+    setErrors(newErrors);
+    setTouched(
+      Object.fromEntries([...requiredFields, 'email'].map((n) => [n, true]))
+    );
+
+    if (hasError) return;
+
     // UI only — no actual order processing
     setSubmitted(true);
     clearCart();
@@ -85,7 +130,7 @@ export default function CheckoutPage() {
         {t('checkout.title')}
       </h1>
 
-      <form onSubmit={handleSubmit} className="mt-8 grid gap-8 lg:grid-cols-3">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 grid gap-8 lg:grid-cols-3">
         {/* ── Form fields ── */}
         <div className="lg:col-span-2 space-y-8">
           {/* Personal info */}
@@ -94,10 +139,35 @@ export default function CheckoutPage() {
               {t('checkout.personalInfo')}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <InputField label={t('checkout.firstName')} name="firstName" required />
-              <InputField label={t('checkout.lastName')} name="lastName" required />
-              <InputField label={t('checkout.phone')} name="phone" type="tel" required />
-              <InputField label={t('checkout.email')} name="email" type="email" />
+              <InputField
+                label={t('checkout.firstName')}
+                name="firstName"
+                required
+                error={touched.firstName && errors.firstName}
+                onBlur={handleBlur}
+              />
+              <InputField
+                label={t('checkout.lastName')}
+                name="lastName"
+                required
+                error={touched.lastName && errors.lastName}
+                onBlur={handleBlur}
+              />
+              <InputField
+                label={t('checkout.phone')}
+                name="phone"
+                type="tel"
+                required
+                error={touched.phone && errors.phone}
+                onBlur={handleBlur}
+              />
+              <InputField
+                label={t('checkout.email')}
+                name="email"
+                type="email"
+                error={touched.email && errors.email}
+                onBlur={handleBlur}
+              />
             </div>
           </section>
 
@@ -107,9 +177,25 @@ export default function CheckoutPage() {
               {t('checkout.deliveryAddress')}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <InputField label={t('checkout.city')} name="city" required />
-              <InputField label={t('checkout.street')} name="street" required />
-              <InputField label={t('checkout.building')} name="building" />
+              <InputField
+                label={t('checkout.city')}
+                name="city"
+                required
+                error={touched.city && errors.city}
+                onBlur={handleBlur}
+              />
+              <InputField
+                label={t('checkout.street')}
+                name="street"
+                required
+                error={touched.street && errors.street}
+                onBlur={handleBlur}
+              />
+              <InputField
+                label={t('checkout.building')}
+                name="building"
+                onBlur={handleBlur}
+              />
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-sm font-semibold text-stone-700">
                   {t('checkout.notes')}
@@ -188,7 +274,7 @@ export default function CheckoutPage() {
 
 /* ── Reusable sub-components ── */
 
-function InputField({ label, name, type = 'text', required = false }) {
+function InputField({ label, name, type = 'text', required = false, error, onBlur }) {
   return (
     <div>
       <label htmlFor={name} className="mb-1.5 block text-sm font-semibold text-stone-700">
@@ -199,8 +285,19 @@ function InputField({ label, name, type = 'text', required = false }) {
         name={name}
         type={type}
         required={required}
-        className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm outline-none placeholder:text-stone-400 focus:border-primary transition"
+        onBlur={onBlur}
+        className={`w-full rounded-xl border bg-stone-50 px-4 py-3 text-sm outline-none placeholder:text-stone-400 transition ${
+          error
+            ? 'border-red-400 focus:border-red-500'
+            : 'border-stone-200 focus:border-primary'
+        }`}
       />
+      {error && (
+        <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-500">
+          <AlertCircle size={12} />
+          {error}
+        </p>
+      )}
     </div>
   );
 }

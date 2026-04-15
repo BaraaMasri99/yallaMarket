@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Clock3,
@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Sparkles,
   Truck,
+  X,
 } from 'lucide-react';
 import CategoryCard from '../components/CategoryCard';
 import { useLanguage } from '../context/LanguageContext';
@@ -17,6 +18,7 @@ import { getAllCategories } from '../services/categoryService';
 export default function Home() {
   const { t } = useLanguage();
   const [categories, setCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -26,6 +28,17 @@ export default function Home() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Filter categories by search query (matches name or nameEn)
+  const filteredCategories = useMemo(() => {
+    if (!searchQuery.trim()) return categories;
+    const q = searchQuery.trim().toLowerCase();
+    return categories.filter(
+      (cat) =>
+        cat.name?.toLowerCase().includes(q) ||
+        cat.nameEn?.toLowerCase().includes(q)
+    );
+  }, [categories, searchQuery]);
 
   const highlights = [
     {
@@ -68,18 +81,24 @@ export default function Home() {
 
             {/* Search bar */}
             <div className="mx-auto flex max-w-lg items-center gap-2 rounded-full border border-stone-200 bg-white px-5 py-3 shadow-card">
-              <Search size={18} className="text-stone-400" />
+              <Search size={18} className="text-stone-400 shrink-0" />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('hero.searchPlaceholder')}
                 className="flex-1 bg-transparent text-sm outline-none placeholder:text-stone-400"
               />
-              <button
-                type="button"
-                className="rounded-full bg-primary px-5 py-2 text-sm font-bold text-white transition hover:brightness-110"
-              >
-                {t('hero.searchBtn')}
-              </button>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-stone-400 transition hover:bg-stone-100 hover:text-stone-600"
+                  aria-label="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
           </div>
 
@@ -112,11 +131,27 @@ export default function Home() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.id} category={cat} />
-          ))}
-        </div>
+        {filteredCategories.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {filteredCategories.map((cat) => (
+              <CategoryCard key={cat.id} category={cat} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-stone-100 text-stone-400">
+              <Search size={28} />
+            </div>
+            <p className="text-stone-500">{t('hero.noResults')}</p>
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="mt-3 text-sm font-semibold text-primary transition hover:brightness-110"
+            >
+              {t('hero.clearSearch')}
+            </button>
+          </div>
+        )}
       </section>
 
       {/* ══════ Delivery CTA ══════ */}

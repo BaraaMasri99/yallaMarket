@@ -1,13 +1,20 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, Search, ShoppingBag, X, Globe } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, ShoppingBag, X, Globe } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useEffect } from 'react';
 
 export default function Navbar() {
   const { totalItems } = useCart();
   const { t, locale, toggleLanguage } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // Auto-close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const navLinks = [
     { label: t('nav.home'), to: '/' },
@@ -45,9 +52,13 @@ export default function Navbar() {
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
-              key={link.label}
+              key={link.to}
               to={link.to}
-              className="text-sm font-semibold text-stone-700 transition hover:text-primary"
+              className={`text-sm font-semibold transition hover:text-primary ${
+                pathname === link.to
+                  ? 'text-primary'
+                  : 'text-stone-700'
+              }`}
             >
               {link.label}
             </Link>
@@ -70,7 +81,11 @@ export default function Navbar() {
           {/* Cart */}
           <Link
             to="/cart"
-            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-700 shadow-sm transition hover:border-primary hover:text-primary"
+            className={`relative flex h-11 w-11 items-center justify-center rounded-full border bg-white shadow-sm transition hover:border-primary hover:text-primary ${
+              pathname === '/cart'
+                ? 'border-primary text-primary'
+                : 'border-stone-200 text-stone-700'
+            }`}
             aria-label={t('nav.cart')}
           >
             <ShoppingBag size={18} />
@@ -97,17 +112,18 @@ export default function Navbar() {
           <nav className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link
-                key={link.label}
+                key={link.to}
                 to={link.to}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 hover:text-primary"
+                className={`rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-stone-50 hover:text-primary ${
+                  pathname === link.to ? 'text-primary bg-primary/5' : 'text-stone-700'
+                }`}
               >
                 {link.label}
               </Link>
             ))}
             <button
               type="button"
-              onClick={() => { toggleLanguage(); setMobileOpen(false); }}
+              onClick={toggleLanguage}
               className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 hover:text-primary"
             >
               <Globe size={15} />

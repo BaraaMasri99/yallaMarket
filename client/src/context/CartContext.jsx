@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, useCallback, useMemo } from 'react';
+import { createContext, useContext, useReducer, useEffect, useCallback, useMemo, useState } from 'react';
 
 const CartContext = createContext();
 
@@ -16,13 +16,14 @@ function loadCart() {
 function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM': {
-      const existing = state.find((i) => i.id === action.payload.id);
+      const { product, qty = 1 } = action.payload;
+      const existing = state.find((i) => i.id === product.id);
       if (existing) {
         return state.map((i) =>
-          i.id === action.payload.id ? { ...i, qty: i.qty + 1 } : i
+          i.id === product.id ? { ...i, qty: i.qty + qty } : i
         );
       }
-      return [...state, { ...action.payload, qty: 1 }];
+      return [...state, { ...product, qty }];
     }
     case 'REMOVE_ITEM':
       return state.filter((i) => i.id !== action.payload);
@@ -43,13 +44,25 @@ function cartReducer(state, action) {
 export function CartProvider({ children }) {
   const [items, dispatch] = useReducer(cartReducer, null, loadCart);
 
+  // Toast state for add-to-cart notifications
+  const [toast, setToast] = useState(null);
+
   // Persist to localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
+  /**
+   * Add a product to cart. Supports optional qty parameter.
+   * @param {Object} product – product object
+   * @param {number} [qty=1] – quantity to add
+   */
   const addItem = useCallback(
-    (product) => dispatch({ type: 'ADD_ITEM', payload: product }),
+    (product, qty = 1) => {
+      dispatch({ type: 'ADD_ITEM', payload: { product, qty } });
+      // Show toast notification
+      setToast({ name: product.name, nameEn: product.nameEn });
+    },
     []
   );
 
@@ -65,6 +78,8 @@ export function CartProvider({ children }) {
 
   const clearCart = useCallback(() => dispatch({ type: 'CLEAR' }), []);
 
+  const dismissToast = useCallback(() => setToast(null), []);
+
   const totalItems = useMemo(() => items.reduce((sum, i) => sum + i.qty, 0), [items]);
   const subtotal = useMemo(
     () => items.reduce((sum, i) => sum + i.price * i.qty, 0),
@@ -73,7 +88,17 @@ export function CartProvider({ children }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, updateQty, clearCart, totalItems, subtotal }}
+      value={{
+        items,
+        addItem,
+        removeItem,
+        updateQty,
+        clearCart,
+        totalItems,
+        subtotal,
+        toast,
+        dismissToast,
+      }}
     >
       {children}
     </CartContext.Provider>
