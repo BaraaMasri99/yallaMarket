@@ -1,12 +1,6 @@
+import { Link } from 'react-router-dom';
 import { ShoppingBag, Phone, Mail, MapPin, Clock, Facebook, Instagram, Twitter } from 'lucide-react';
-
-const quickLinks = [
-  { label: 'الرئيسية', href: '#' },
-  { label: 'العروض', href: '#' },
-  { label: 'الأقسام', href: '#' },
-  { label: 'عن يلا ماركت', href: '#' },
-  { label: 'سياسة الخصوصية', href: '#' },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 const contactInfo = [
   { icon: Phone, text: '0599-123-456' },
@@ -22,6 +16,15 @@ const socials = [
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const quickLinks = [
+    { label: t('nav.home'), to: '/' },
+    { label: t('nav.categories'), to: '/' },
+    { label: t('nav.about'), to: '/' },
+    { label: t('footer.privacy'), to: '/' },
+  ];
+
   return (
     <footer className="border-t border-stone-800 bg-stone-950 text-white">
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6">
@@ -29,18 +32,17 @@ export default function Footer() {
 
           {/* ── Brand ── */}
           <div className="space-y-4 lg:col-span-1">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-white shadow-lg">
                 <ShoppingBag size={20} />
               </div>
               <div>
-                <p className="text-lg font-black">يلا ماركت</p>
-                <p className="text-xs text-stone-400">Fresh picks, delivered fast</p>
+                <p className="text-lg font-black">{t('nav.brand')}</p>
+                <p className="text-xs text-stone-400">{t('nav.tagline')}</p>
               </div>
-            </div>
+            </Link>
             <p className="text-sm leading-7 text-stone-400">
-              متجرك الإلكتروني الأول للتسوق اليومي. خضار طازجة، مخبوزات،
-              لحوم، وكل ما يحتاجه بيتك بضغطة زر.
+              {t('footer.description')}
             </p>
 
             {/* Socials */}
@@ -61,17 +63,17 @@ export default function Footer() {
           {/* ── Quick Links ── */}
           <div>
             <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-primary">
-              روابط سريعة
+              {t('footer.quickLinks')}
             </h3>
             <ul className="space-y-3">
-              {quickLinks.map(({ label, href }) => (
+              {quickLinks.map(({ label, to }) => (
                 <li key={label}>
-                  <a
-                    href={href}
+                  <Link
+                    to={to}
                     className="text-sm text-stone-400 transition hover:text-white"
                   >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -80,7 +82,7 @@ export default function Footer() {
           {/* ── Contact ── */}
           <div>
             <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-primary">
-              تواصل معنا
+              {t('footer.contactUs')}
             </h3>
             <ul className="space-y-3">
               {contactInfo.map(({ icon: Icon, text }) => (
@@ -95,22 +97,22 @@ export default function Footer() {
           {/* ── Newsletter ── */}
           <div>
             <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-primary">
-              اشترك بالنشرة
+              {t('footer.newsletter')}
             </h3>
             <p className="mb-4 text-sm leading-7 text-stone-400">
-              احصل على أحدث العروض والتخفيضات مباشرة في بريدك.
+              {t('footer.newsletterText')}
             </p>
             <div className="flex gap-2">
               <input
                 type="email"
-                placeholder="بريدك الإلكتروني"
+                placeholder={t('footer.emailPlaceholder')}
                 className="flex-1 rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white outline-none placeholder:text-stone-500 focus:border-primary transition"
               />
               <button
                 type="button"
                 className="shrink-0 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
               >
-                اشترك
+                {t('footer.subscribe')}
               </button>
             </div>
           </div>
@@ -119,8 +121,8 @@ export default function Footer() {
 
         {/* ── Bottom bar ── */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-stone-800 pt-6 text-xs text-stone-500 md:flex-row">
-          <p>© {new Date().getFullYear()} يلا ماركت. جميع الحقوق محفوظة.</p>
-          <p>صُنع بـ ❤️ في فلسطين</p>
+          <p>© {new Date().getFullYear()} {t('nav.brand')}. {t('footer.rights')}</p>
+          <p>{t('footer.madeWith')}</p>
         </div>
       </div>
     </footer>
