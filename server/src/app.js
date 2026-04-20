@@ -1,6 +1,9 @@
 import cors from 'cors';
 import express from 'express';
 import { env } from './config/env.js';
+import categoriesRouter from './routes/categories.js';
+import productsRouter from './routes/products.js';
+import ordersRouter from './routes/orders.js';
 
 const app = express();
 
@@ -19,6 +22,10 @@ app.get('/api/health', (req, res) => {
     message: 'YallaMarket API is running',
   });
 });
+
+app.use('/api/categories', categoriesRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/orders', ordersRouter);
 
 app.use((req, res) => {
   res.status(404).json({
