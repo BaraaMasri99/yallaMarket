@@ -31,17 +31,16 @@ export function initializeDatabase() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
+      full_name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL,
       phone TEXT NOT NULL DEFAULT '',
-      address TEXT NOT NULL DEFAULT '',
+      password_hash TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'customer' CHECK(role IN ('customer', 'admin')),
-      is_active INTEGER NOT NULL DEFAULT 1 CHECK(is_active IN (0, 1)),
-      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  migrateUsersTable();
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS products (
@@ -85,4 +84,67 @@ export function initializeDatabase() {
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `);
+}
+
+function migrateUsersTable() {
+  const columns = db.prepare('PRAGMA table_info(users)').all();
+  const columnNames = new Set(columns.map((column) => column.name));
+  const hasLegacyColumns =
+    columnNames.has('name') ||
+    columnNames.has('password') ||
+    columnNames.has('address') ||
+    columnNames.has('is_active') ||
+    columnNames.has('updated_at');
+  const hasAuthColumns = columnNames.has('full_name') && columnNames.has('password_hash');
+
+  if (hasAuthColumns && !hasLegacyColumns) return;
+
+  const fullNameExpression =
+    columnNames.has('full_name') && columnNames.has('name')
+      ? "COALESCE(full_name, name, '')"
+      : columnNames.has('full_name')
+        ? "COALESCE(full_name, '')"
+        : "COALESCE(name, '')";
+  const passwordExpression =
+    columnNames.has('password_hash') && columnNames.has('password')
+      ? "COALESCE(password_hash, password, '')"
+      : columnNames.has('password_hash')
+        ? "COALESCE(password_hash, '')"
+        : "COALESCE(password, '')";
+
+  db.exec('PRAGMA foreign_keys = OFF');
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_new (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      phone TEXT NOT NULL DEFAULT '',
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'customer' CHECK(role IN ('customer', 'admin')),
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  db.exec(`
+    INSERT OR IGNORE INTO users_new (id, full_name, email, phone, password_hash, role, created_at)
+    SELECT
+      id,
+      ${fullNameExpression},
+      LOWER(TRIM(email)),
+      COALESCE(phone, ''),
+      ${passwordExpression},
+      COALESCE(role, 'customer'),
+      COALESCE(created_at, CURRENT_TIMESTAMP)
+    FROM users
+  `);
+
+  db.exec('DROP TABLE users');
+  db.exec('ALTER TABLE users_new RENAME TO users');
+  db.exec('PRAGMA foreign_keys = ON');
+
+  const foreignKeyIssues = db.prepare('PRAGMA foreign_key_check').all();
+  if (foreignKeyIssues.length > 0) {
+    console.warn('SQLite foreign key issues after users migration', foreignKeyIssues);
+  }
 }

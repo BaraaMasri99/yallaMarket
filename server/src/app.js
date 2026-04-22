@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { env } from './config/env.js';
+import authRouter from './routes/auth.js';
 import categoriesRouter from './routes/categories.js';
 import productsRouter from './routes/products.js';
 import ordersRouter from './routes/orders.js';
@@ -23,6 +24,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.use('/api/auth', authRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
