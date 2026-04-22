@@ -4,8 +4,10 @@ import { env } from './config/env.js';
 
 initializeDatabase();
 
-const server = app.listen(env.port, () => {
-  console.log(`Server listening on port ${env.port}`);
+const PORT = process.env.PORT || env.port || 3000;
+
+const server = app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
 
 function shutdown() {
