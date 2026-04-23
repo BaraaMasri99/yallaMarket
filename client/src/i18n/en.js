@@ -15,6 +15,8 @@ const en = {
     search: 'Search products',
     startShopping: 'Start shopping',
     cart: 'Cart',
+    login: 'Login',
+    logout: 'Logout',
   },
 
   // ── Hero ──
@@ -143,6 +145,32 @@ const en = {
   },
 
   // ── General ──
+  auth: {
+    loginTitle: 'Login',
+    loginSubtitle: 'Welcome back. Sign in to continue shopping with YallaMarket.',
+    registerTitle: 'Create account',
+    registerSubtitle: 'Join YallaMarket and keep your shopping details ready for next time.',
+    fullName: 'Full name',
+    email: 'Email',
+    phone: 'Phone',
+    password: 'Password',
+    confirmPassword: 'Confirm password',
+    login: 'Login',
+    register: 'Register',
+    loading: 'Please wait...',
+    noAccount: "Don't have an account?",
+    hasAccount: 'Already have an account?',
+    createAccount: 'Create one',
+    required: 'This field is required',
+    invalidEmail: 'Enter a valid email address',
+    invalidPhone: 'Enter a valid phone number',
+    shortPassword: 'Password must be at least 6 characters',
+    passwordMismatch: 'Passwords do not match',
+    loginError: 'Login failed. Please try again.',
+    registerError: 'Registration failed. Please try again.',
+    registerSuccess: 'Your account was created. You can log in now.',
+  },
+
   general: {
     loading: 'Loading...',
     error: 'An error occurred',
