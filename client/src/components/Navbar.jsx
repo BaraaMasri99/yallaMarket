@@ -1,17 +1,18 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, ShoppingBag, X, Globe } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Globe, LogOut, Menu, ShoppingBag, UserRound, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useEffect } from 'react';
 
 export default function Navbar() {
   const { totalItems } = useCart();
+  const { currentUser, isAuthenticated, logout } = useAuth();
   const { t, locale, toggleLanguage } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  // Auto-close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -22,10 +23,16 @@ export default function Navbar() {
     { label: t('nav.about'), to: '/#about' },
   ];
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/', { replace: true });
+  };
+
+  const displayName = currentUser?.full_name || currentUser?.fullName || currentUser?.email || '';
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/60 bg-[#fafaf9]/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
-        {/* Mobile menu toggle */}
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -35,7 +42,6 @@ export default function Navbar() {
           {mobileOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
 
-        {/* Brand */}
         <Link to="/" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white shadow-card">
             <ShoppingBag size={20} />
@@ -48,16 +54,13 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop nav links */}
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
               className={`text-sm font-semibold transition hover:text-primary ${
-                pathname === link.to
-                  ? 'text-primary'
-                  : 'text-stone-700'
+                pathname === link.to ? 'text-primary' : 'text-stone-700'
               }`}
             >
               {link.label}
@@ -65,9 +68,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Right actions */}
         <div className="flex items-center gap-3">
-          {/* Language toggle */}
           <button
             type="button"
             onClick={toggleLanguage}
@@ -78,7 +79,35 @@ export default function Navbar() {
             {locale === 'ar' ? 'EN' : 'عربي'}
           </button>
 
-          {/* Cart */}
+          {isAuthenticated ? (
+            <div className="hidden items-center gap-2 md:flex">
+              <span className="max-w-36 truncate text-sm font-semibold text-stone-700">
+                {displayName}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-700 shadow-sm transition hover:border-red-200 hover:text-red-500"
+                aria-label={t('nav.logout')}
+                title={t('nav.logout')}
+              >
+                <LogOut size={17} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className={`hidden h-11 items-center gap-2 rounded-full border bg-white px-4 text-sm font-semibold shadow-sm transition hover:border-action hover:text-action md:inline-flex ${
+                pathname === '/login'
+                  ? 'border-action text-action'
+                  : 'border-stone-200 text-stone-700'
+              }`}
+            >
+              <UserRound size={16} />
+              {t('nav.login')}
+            </Link>
+          )}
+
           <Link
             to="/cart"
             className={`relative flex h-11 w-11 items-center justify-center rounded-full border bg-white shadow-sm transition hover:border-primary hover:text-primary ${
@@ -96,7 +125,6 @@ export default function Navbar() {
             )}
           </Link>
 
-          {/* CTA button */}
           <Link
             to="/category/vegetables-fruits"
             className="hidden rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 md:inline-flex"
@@ -106,7 +134,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile nav drawer */}
       {mobileOpen && (
         <div className="border-t border-stone-200/80 bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
@@ -115,12 +142,13 @@ export default function Navbar() {
                 key={link.to}
                 to={link.to}
                 className={`rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-stone-50 hover:text-primary ${
-                  pathname === link.to ? 'text-primary bg-primary/5' : 'text-stone-700'
+                  pathname === link.to ? 'bg-primary/5 text-primary' : 'text-stone-700'
                 }`}
               >
                 {link.label}
               </Link>
             ))}
+
             <button
               type="button"
               onClick={toggleLanguage}
@@ -129,6 +157,27 @@ export default function Navbar() {
               <Globe size={15} />
               {locale === 'ar' ? 'English' : 'العربية'}
             </button>
+
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 hover:text-red-500"
+              >
+                <LogOut size={15} />
+                {t('nav.logout')}
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-stone-50 hover:text-action ${
+                  pathname === '/login' ? 'bg-action/5 text-action' : 'text-stone-700'
+                }`}
+              >
+                <UserRound size={15} />
+                {t('nav.login')}
+              </Link>
+            )}
           </nav>
         </div>
       )}
