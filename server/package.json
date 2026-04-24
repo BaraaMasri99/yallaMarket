@@ -6,7 +6,8 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon --exec \"node --no-warnings=ExperimentalWarning\" src/server.js",
-    "start": "node --no-warnings=ExperimentalWarning src/server.js"
+    "start": "node --no-warnings=ExperimentalWarning src/server.js",
+    "seed:admin": "node --no-warnings=ExperimentalWarning src/seeders/adminSeeder.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
