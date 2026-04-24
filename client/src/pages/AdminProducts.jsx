@@ -3,8 +3,13 @@ import { Pencil, Trash2, Plus, X, Check } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import Spinner from '../components/Spinner';
 import { useAuth } from '../context/AuthContext';
-
-const API = import.meta.env.VITE_API_URL || '';
+import { getAllCategories } from '../services/categoryService';
+import {
+  createProduct,
+  deleteProduct,
+  getAllProducts,
+  updateProduct,
+} from '../services/productService';
 
 const EMPTY_FORM = {
   name: '', name_en: '', description: '', description_en: '',
@@ -25,24 +30,18 @@ export default function AdminProducts() {
   const [formError, setFormError] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
 
-  const authHeaders = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => { load(); }, []);
 
   async function load() {
     setLoading(true);
     setError(null);
     try {
-      const [pRes, cRes] = await Promise.all([
-        fetch(`${API}/api/products?limit=1000`),
-        fetch(`${API}/api/categories`),
+      const [products, categories] = await Promise.all([
+        getAllProducts(),
+        getAllCategories(),
       ]);
-      if (!pRes.ok || !cRes.ok) throw new Error();
-      setProducts(await pRes.json());
-      setCategories(await cRes.json());
+      setProducts(products);
+      setCategories(categories);
     } catch {
       setError('تعذر تحميل البيانات. تأكد من تشغيل الخادم.');
     } finally {
@@ -85,15 +84,11 @@ export default function AdminProducts() {
     setFormError(null);
     try {
       const body = { ...form, price: Number(form.price), stock: Number(form.stock || 0) };
-      const url = modal === 'edit'
-        ? `${API}/api/products/${editing.id}`
-        : `${API}/api/products`;
-      const res = await fetch(url, {
-        method: modal === 'edit' ? 'PUT' : 'POST',
-        headers: authHeaders,
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error((await res.json()).message || 'خطأ في الحفظ');
+      if (modal === 'edit') {
+        await updateProduct(editing.id, body, token);
+      } else {
+        await createProduct(body, token);
+      }
       closeModal();
       await load();
     } catch (err) {
@@ -105,11 +100,7 @@ export default function AdminProducts() {
 
   async function handleDelete(id) {
     try {
-      const res = await fetch(`${API}/api/products/${id}`, {
-        method: 'DELETE',
-        headers: authHeaders,
-      });
-      if (!res.ok) throw new Error();
+      await deleteProduct(id, token);
       setDeleteId(null);
       await load();
     } catch {

@@ -40,14 +40,18 @@ router.post('/', (req, res) => {
   }
 
   // Insert order + items in a transaction
-  const insertOrder = db.transaction(() => {
+  let orderId;
+
+  try {
+    db.exec('BEGIN');
+
     const orderResult = db
       .prepare(
         'INSERT INTO orders (user_id, shipping_address, notes, total_price) VALUES (?, ?, ?, ?)'
       )
       .run(user_id, shipping_address, notes, total_price);
 
-    const orderId = orderResult.lastInsertRowid;
+    orderId = orderResult.lastInsertRowid;
 
     for (const { product, quantity } of resolvedItems) {
       db.prepare(
@@ -58,10 +62,12 @@ router.post('/', (req, res) => {
         .run(quantity, product.id);
     }
 
-    return orderId;
-  });
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
 
-  const orderId = insertOrder();
   res.status(201).json(getOrderWithItems(orderId));
 });
 
