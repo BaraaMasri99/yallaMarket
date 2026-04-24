@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import Spinner from '../components/Spinner';
 import { useAuth } from '../context/AuthContext';
-
-const API = import.meta.env.VITE_API_URL || '';
+import { getAllOrders, updateOrderStatus } from '../services/orderService';
 
 const STATUSES = [
   { value: 'pending',   label: 'قيد الانتظار', color: 'bg-yellow-50 text-yellow-700' },
@@ -24,20 +23,13 @@ export default function AdminOrders() {
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(null);
 
-  const authHeaders = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-
   useEffect(() => { load(); }, []);
 
   async function load() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/api/orders`, { headers: authHeaders });
-      if (!res.ok) throw new Error();
-      setOrders(await res.json());
+      setOrders(await getAllOrders(token));
     } catch {
       setError('تعذر تحميل الطلبات. تأكد من تشغيل الخادم.');
     } finally {
@@ -48,12 +40,7 @@ export default function AdminOrders() {
   async function handleStatusChange(orderId, status) {
     setUpdating(orderId);
     try {
-      const res = await fetch(`${API}/api/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: authHeaders,
-        body: JSON.stringify({ status }),
-      });
-      if (!res.ok) throw new Error();
+      await updateOrderStatus(orderId, status, token);
       setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status } : o));
     } catch {
       alert('تعذر تحديث الحالة');

@@ -3,8 +3,8 @@ import { ShoppingBag, DollarSign, Package, Users } from 'lucide-react';
 import Spinner from '../components/Spinner';
 import AdminLayout from '../components/AdminLayout';
 import { useAuth } from '../context/AuthContext';
-
-const API = import.meta.env.VITE_API_URL || '';
+import { getAllProducts } from '../services/productService';
+import { getAllOrders } from '../services/orderService';
 
 export default function AdminDashboard() {
   const { token } = useAuth();
@@ -17,19 +17,10 @@ export default function AdminDashboard() {
 
     async function fetchStats() {
       try {
-        const authHeaders = {
-          Authorization: `Bearer ${token}`,
-        };
-
-        const [productsRes, ordersRes] = await Promise.all([
-          fetch(`${API}/api/products?limit=1000`),
-          fetch(`${API}/api/orders`, { headers: authHeaders }),
+        const [products, orders] = await Promise.all([
+          getAllProducts(),
+          getAllOrders(token),
         ]);
-
-        if (!productsRes.ok || !ordersRes.ok) throw new Error('Failed to load stats');
-
-        const products = await productsRes.json();
-        const orders = await ordersRes.json();
 
         const totalRevenue = orders.reduce((sum, o) => sum + (o.total_price || 0), 0);
 

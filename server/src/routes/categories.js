@@ -10,16 +10,16 @@ router.get('/', (req, res) => {
   res.json(rows);
 });
 
-// GET /api/categories/:id
-router.get('/:id', (req, res) => {
-  const row = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
+// GET /api/categories/slug/:slug
+router.get('/slug/:slug', (req, res) => {
+  const row = db.prepare('SELECT * FROM categories WHERE slug = ?').get(req.params.slug);
   if (!row) return res.status(404).json({ message: 'Category not found' });
   res.json(row);
 });
 
-// GET /api/categories/slug/:slug
-router.get('/slug/:slug', (req, res) => {
-  const row = db.prepare('SELECT * FROM categories WHERE slug = ?').get(req.params.slug);
+// GET /api/categories/:id
+router.get('/:id', (req, res) => {
+  const row = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
   if (!row) return res.status(404).json({ message: 'Category not found' });
   res.json(row);
 });

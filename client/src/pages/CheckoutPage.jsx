@@ -7,18 +7,24 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { getDisplayName, formatPrice } from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
 import OrderSummary from '../components/OrderSummary';
 import BackLink from '../components/BackLink';
+import Spinner from '../components/Spinner';
+import { createOrder } from '../services/orderService';
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
+  const { currentUser } = useAuth();
   const { t, locale } = useLanguage();
 
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
@@ -43,8 +49,15 @@ export default function CheckoutPage() {
     setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitError('');
+
+    if (!currentUser?.id) {
+      setSubmitError(t('auth.loginError'));
+      return;
+    }
+
     const formData = new FormData(e.target);
     const newErrors = {};
     let hasError = false;
@@ -66,9 +79,27 @@ export default function CheckoutPage() {
 
     if (hasError) return;
 
-    // UI only — no actual order processing
-    setSubmitted(true);
-    clearCart();
+    const addressParts = [
+      formData.get('city'),
+      formData.get('street'),
+      formData.get('building'),
+    ].filter(Boolean);
+
+    setSubmitting(true);
+    try {
+      await createOrder({
+        userId: currentUser.id,
+        shippingAddress: addressParts.join(', '),
+        notes: formData.get('notes') || '',
+        items,
+      });
+      setSubmitted(true);
+      clearCart();
+    } catch (error) {
+      setSubmitError(error.message || t('general.error'));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Redirect to cart if empty and not submitted
@@ -258,11 +289,18 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-action px-6 py-3.5 text-sm font-bold text-white shadow-card transition hover:bg-action-dark"
+              disabled={submitting}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-action px-6 py-3.5 text-sm font-bold text-white shadow-card transition hover:bg-action-dark disabled:cursor-not-allowed disabled:opacity-70"
             >
-              <CheckCircle2 size={18} />
+              {submitting ? <Spinner /> : <CheckCircle2 size={18} />}
               {t('checkout.placeOrder')}
             </button>
+
+            {submitError && (
+              <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+                {submitError}
+              </p>
+            )}
           </OrderSummary>
         </div>
       </form>

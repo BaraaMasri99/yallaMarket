@@ -1,15 +1,33 @@
-// Service layer for products
-// Currently reads from mock data; will be replaced by API calls later
-import { products } from '../../data/products';
+import { api, authConfig } from './api';
+
+function normalizeProduct(product) {
+  if (!product) return null;
+
+  const stock = Number(product.stock || 0);
+  const categoryId = product.category_id ?? product.categoryId;
+
+  return {
+    ...product,
+    categoryId,
+    nameEn: product.nameEn ?? product.name_en ?? '',
+    descriptionEn: product.descriptionEn ?? product.description_en ?? '',
+    price: Number(product.price || 0),
+    stock,
+    inStock: product.inStock ?? stock > 0,
+  };
+}
+
+function normalizeProducts(products) {
+  return Array.isArray(products) ? products.map(normalizeProduct) : [];
+}
 
 /**
  * Get all products.
  * @returns {Promise<Array>}
  */
 export async function getAllProducts() {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve([...products]), 100);
-  });
+  const products = await api.get('/api/products', { params: { limit: 1000 } });
+  return normalizeProducts(products);
 }
 
 /**
@@ -18,10 +36,10 @@ export async function getAllProducts() {
  * @returns {Promise<Array>}
  */
 export async function getProductsByCategory(categoryId) {
-  return new Promise((resolve) => {
-    const filtered = products.filter((p) => p.categoryId === categoryId);
-    setTimeout(() => resolve(filtered), 80);
+  const products = await api.get('/api/products', {
+    params: { category_id: categoryId, limit: 1000 },
   });
+  return normalizeProducts(products);
 }
 
 /**
@@ -30,10 +48,13 @@ export async function getProductsByCategory(categoryId) {
  * @returns {Promise<Object|null>}
  */
 export async function getProductById(id) {
-  return new Promise((resolve) => {
-    const product = products.find((p) => p.id === id) || null;
-    setTimeout(() => resolve(product), 50);
-  });
+  try {
+    const product = await api.get(`/api/products/${id}`);
+    return normalizeProduct(product);
+  } catch (error) {
+    if (error.status === 404) return null;
+    throw error;
+  }
 }
 
 /**
@@ -42,16 +63,13 @@ export async function getProductById(id) {
  * @returns {Promise<Array>}
  */
 export async function searchProducts(query) {
-  return new Promise((resolve) => {
-    const q = query.toLowerCase().trim();
-    if (!q) return resolve([]);
-    const results = products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.nameEn.toLowerCase().includes(q)
-    );
-    setTimeout(() => resolve(results), 80);
+  const q = query.trim();
+  if (!q) return [];
+
+  const products = await api.get('/api/products', {
+    params: { search: q, limit: 1000 },
   });
+  return normalizeProducts(products);
 }
 
 /**
@@ -61,12 +79,20 @@ export async function searchProducts(query) {
  * @returns {Promise<Array>}
  */
 export async function getRelatedProducts(productId, limit = 4) {
-  return new Promise((resolve) => {
-    const product = products.find((p) => p.id === productId);
-    if (!product) return resolve([]);
-    const related = products
-      .filter((p) => p.categoryId === product.categoryId && p.id !== productId)
-      .slice(0, limit);
-    setTimeout(() => resolve(related), 80);
-  });
+  const products = await api.get(`/api/products/related/${productId}`);
+  return normalizeProducts(products).slice(0, limit);
+}
+
+export async function createProduct(product, token) {
+  const created = await api.post('/api/products', product, authConfig(token));
+  return normalizeProduct(created);
+}
+
+export async function updateProduct(id, product, token) {
+  const updated = await api.put(`/api/products/${id}`, product, authConfig(token));
+  return normalizeProduct(updated);
+}
+
+export async function deleteProduct(id, token) {
+  return api.delete(`/api/products/${id}`, authConfig(token));
 }

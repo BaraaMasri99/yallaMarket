@@ -1,16 +1,11 @@
-// Service layer for categories
-// Currently reads from mock data; will be replaced by API calls later
-import { categories } from '../../data/categories';
+import { api } from './api';
 
 /**
  * Get all categories.
  * @returns {Promise<Array>}
  */
 export async function getAllCategories() {
-  // Simulate network delay (remove when connecting to backend)
-  return new Promise((resolve) => {
-    setTimeout(() => resolve([...categories]), 100);
-  });
+  return api.get('/api/categories');
 }
 
 /**
@@ -19,10 +14,12 @@ export async function getAllCategories() {
  * @returns {Promise<Object|null>}
  */
 export async function getCategoryBySlug(slug) {
-  return new Promise((resolve) => {
-    const cat = categories.find((c) => c.slug === slug) || null;
-    setTimeout(() => resolve(cat), 50);
-  });
+  try {
+    return await api.get(`/api/categories/slug/${slug}`);
+  } catch (error) {
+    if (error.status === 404) return null;
+    throw error;
+  }
 }
 
 /**
@@ -31,8 +28,10 @@ export async function getCategoryBySlug(slug) {
  * @returns {Promise<Object|null>}
  */
 export async function getCategoryById(id) {
-  return new Promise((resolve) => {
-    const cat = categories.find((c) => c.id === id) || null;
-    setTimeout(() => resolve(cat), 50);
-  });
+  try {
+    return await api.get(`/api/categories/${id}`);
+  } catch (error) {
+    if (error.status === 404) return null;
+    throw error;
+  }
 }
