@@ -28,6 +28,8 @@ export function initializeDatabase() {
     )
   `);
 
+  migrateCategoriesTable();
+
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,6 +86,19 @@ export function initializeDatabase() {
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `);
+}
+
+function migrateCategoriesTable() {
+  const columns = db.prepare('PRAGMA table_info(categories)').all();
+  const columnNames = new Set(columns.map((column) => column.name));
+
+  if (!columnNames.has('emoji')) {
+    db.exec("ALTER TABLE categories ADD COLUMN emoji TEXT NOT NULL DEFAULT ''");
+  }
+
+  if (!columnNames.has('gradient')) {
+    db.exec("ALTER TABLE categories ADD COLUMN gradient TEXT NOT NULL DEFAULT ''");
+  }
 }
 
 function migrateUsersTable() {

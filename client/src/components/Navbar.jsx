@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Globe, LogOut, Menu, ShoppingBag, UserRound, X } from 'lucide-react';
+import { Globe, LogOut, Menu, Package, ShoppingBag, UserRound, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -29,6 +29,7 @@ export default function Navbar() {
   };
 
   const displayName = currentUser?.full_name || currentUser?.fullName || currentUser?.email || '';
+  const isAdmin = currentUser?.role === 'admin';
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/60 bg-[#fafaf9]/80 backdrop-blur">
@@ -84,6 +85,15 @@ export default function Navbar() {
               <span className="max-w-36 truncate text-sm font-semibold text-stone-700">
                 {displayName}
               </span>
+              {isAdmin && (
+                <Link
+                  to="/admin/products"
+                  className="inline-flex h-11 items-center gap-2 rounded-full bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                >
+                  <Package size={16} />
+                  Admin Products
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={handleLogout}
@@ -159,14 +169,25 @@ export default function Navbar() {
             </button>
 
             {isAuthenticated ? (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 hover:text-red-500"
-              >
-                <LogOut size={15} />
-                {t('nav.logout')}
-              </button>
+              <>
+                {isAdmin && (
+                  <Link
+                    to="/admin/products"
+                    className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  >
+                    <Package size={15} />
+                    Admin Products
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 hover:text-red-500"
+                >
+                  <LogOut size={15} />
+                  {t('nav.logout')}
+                </button>
+              </>
             ) : (
               <Link
                 to="/login"

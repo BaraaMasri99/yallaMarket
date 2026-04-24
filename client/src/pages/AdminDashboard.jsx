@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { ShoppingBag, DollarSign, Package, Users } from 'lucide-react';
 import Spinner from '../components/Spinner';
 import AdminLayout from '../components/AdminLayout';
+import { useAuth } from '../context/AuthContext';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API = import.meta.env.VITE_API_URL || '';
 
 export default function AdminDashboard() {
+  const { token } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,9 +17,13 @@ export default function AdminDashboard() {
 
     async function fetchStats() {
       try {
+        const authHeaders = {
+          Authorization: `Bearer ${token}`,
+        };
+
         const [productsRes, ordersRes] = await Promise.all([
           fetch(`${API}/api/products?limit=1000`),
-          fetch(`${API}/api/orders`),
+          fetch(`${API}/api/orders`, { headers: authHeaders }),
         ]);
 
         if (!productsRes.ok || !ordersRes.ok) throw new Error('Failed to load stats');
@@ -44,7 +50,7 @@ export default function AdminDashboard() {
 
     fetchStats();
     return () => { cancelled = true; };
-  }, []);
+  }, [token]);
 
   return (
     <AdminLayout>
