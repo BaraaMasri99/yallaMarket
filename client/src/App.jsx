@@ -9,6 +9,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminProducts from './pages/AdminProducts';
+import AdminOrders from './pages/AdminOrders';
 import AdminRoute from './components/AdminRoute';
 
 export default function App() {
@@ -28,6 +30,14 @@ export default function App() {
         <Route
           path="/admin"
           element={<AdminRoute><AdminDashboard /></AdminRoute>}
+        />
+        <Route
+          path="/admin/products"
+          element={<AdminRoute><AdminProducts /></AdminRoute>}
+        />
+        <Route
+          path="/admin/orders"
+          element={<AdminRoute><AdminOrders /></AdminRoute>}
         />
       </Routes>
     </BrowserRouter>
