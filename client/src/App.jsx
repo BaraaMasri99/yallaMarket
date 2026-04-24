@@ -6,6 +6,10 @@ import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminProducts from './pages/AdminProducts';
+import AdminOrders from './pages/AdminOrders';
+import AdminRoute from './components/AdminRoute';
 
 export default function App() {
   return (
@@ -19,6 +23,18 @@ export default function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
+        <Route
+          path="/admin"
+          element={<AdminRoute><AdminDashboard /></AdminRoute>}
+        />
+        <Route
+          path="/admin/products"
+          element={<AdminRoute><AdminProducts /></AdminRoute>}
+        />
+        <Route
+          path="/admin/orders"
+          element={<AdminRoute><AdminOrders /></AdminRoute>}
+        />
       </Routes>
     </BrowserRouter>
   );
