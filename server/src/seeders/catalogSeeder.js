@@ -1,16 +1,23 @@
-import { categories } from '../../../client/data/categories.js';
-import { products } from '../../../client/data/products.js';
+import { categories, products } from './catalogData.js';
 import { db, initializeDatabase } from '../config/database.js';
 
 initializeDatabase();
 
 const insertCategory = db.prepare(`
-  INSERT OR IGNORE INTO categories (id, name, slug, image, emoji, gradient)
-  VALUES (?, ?, ?, ?, ?, ?)
+  INSERT INTO categories (id, name, name_en, slug, image, emoji, gradient)
+  VALUES (?, ?, ?, ?, ?, ?, ?)
+  ON CONFLICT(id) DO UPDATE SET
+    name = excluded.name,
+    name_en = excluded.name_en,
+    slug = excluded.slug,
+    image = excluded.image,
+    emoji = excluded.emoji,
+    gradient = excluded.gradient,
+    updated_at = CURRENT_TIMESTAMP
 `);
 
 const insertProduct = db.prepare(`
-  INSERT OR IGNORE INTO products (
+  INSERT INTO products (
     id,
     name,
     name_en,
@@ -24,6 +31,19 @@ const insertProduct = db.prepare(`
     category_id
   )
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ON CONFLICT(id) DO UPDATE SET
+    name = excluded.name,
+    name_en = excluded.name_en,
+    description = excluded.description,
+    description_en = excluded.description_en,
+    price = excluded.price,
+    unit = excluded.unit,
+    stock = excluded.stock,
+    image = excluded.image,
+    badge = excluded.badge,
+    category_id = excluded.category_id,
+    is_active = 1,
+    updated_at = CURRENT_TIMESTAMP
 `);
 
 db.exec('BEGIN');
@@ -33,6 +53,7 @@ try {
     insertCategory.run(
       category.id,
       category.name,
+      category.name_en || category.nameEn || '',
       category.slug,
       category.image || '',
       category.emoji || '',
@@ -44,15 +65,15 @@ try {
     insertProduct.run(
       product.id,
       product.name,
-      product.nameEn || '',
+      product.name_en || product.nameEn || '',
       product.description || '',
-      product.descriptionEn || '',
+      product.description_en || product.descriptionEn || '',
       product.price,
       product.unit || '',
-      product.inStock === false ? 0 : 25,
+      product.stock ?? (product.inStock === false ? 0 : 25),
       product.image || '',
       product.badge || '',
-      product.categoryId
+      product.category_id ?? product.categoryId
     );
   }
 

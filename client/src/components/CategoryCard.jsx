@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { getDisplayCategoryName } from '../utils/helpers';
 
 export default function CategoryCard({ category }) {
-  const { name, slug, emoji, image, gradient } = category;
+  const { locale } = useLanguage();
+  const { slug, emoji, image, gradient } = category;
+  const name = getDisplayCategoryName(category, locale);
   const hasImage = image && image.trim() !== '';
 
   return (

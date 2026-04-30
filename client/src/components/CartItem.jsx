@@ -1,7 +1,11 @@
 import { Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { getDisplayName, formatPrice } from '../utils/helpers';
+import {
+  formatPrice,
+  getDisplayName,
+  getProductEmoji,
+} from '../utils/helpers';
 import QuantitySelector from './QuantitySelector';
 
 /**
@@ -12,16 +16,23 @@ export default function CartItem({ item }) {
   const { t, locale } = useLanguage();
 
   const displayName = getDisplayName(item, locale);
+  const emoji = getProductEmoji(item);
 
   return (
     <div className="flex items-start gap-4 rounded-2xl border border-stone-200/80 bg-white p-4 shadow-sm transition hover:shadow-card">
       {/* Thumbnail */}
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-stone-100">
-        <img
-          src={item.image}
-          alt={displayName}
-          className="h-full w-full object-cover"
-        />
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={displayName}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-3xl">
+            <span aria-hidden="true">{emoji}</span>
+          </div>
+        )}
       </div>
 
       {/* Details */}

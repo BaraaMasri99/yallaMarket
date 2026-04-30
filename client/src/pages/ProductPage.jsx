@@ -4,7 +4,13 @@ import { getProductById, getRelatedProducts } from '../services/productService';
 import { getCategoryById } from '../services/categoryService';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { getDisplayName, getDisplayDescription, formatPrice } from '../utils/helpers';
+import {
+  formatPrice,
+  getDisplayCategoryName,
+  getDisplayDescription,
+  getDisplayName,
+  getProductEmoji,
+} from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
 import ProductCard from '../components/ProductCard';
 import QuantitySelector from '../components/QuantitySelector';
@@ -23,33 +29,48 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setError('');
     setQty(1);
     setAdded(false);
 
     (async () => {
-      const prod = await getProductById(Number(id));
-      if (cancelled) return;
-      setProduct(prod);
+      try {
+        const prod = await getProductById(Number(id));
+        if (cancelled) return;
+        setProduct(prod);
 
-      if (prod) {
-        const [cat, rel] = await Promise.all([
-          getCategoryById(prod.categoryId),
-          getRelatedProducts(prod.id, 4),
-        ]);
-        if (!cancelled) {
-          setCategory(cat);
-          setRelated(rel);
+        if (prod) {
+          const [cat, rel] = await Promise.all([
+            getCategoryById(prod.categoryId),
+            getRelatedProducts(prod.id, 4),
+          ]);
+          if (!cancelled) {
+            setCategory(cat);
+            setRelated(rel);
+          }
+        } else if (!cancelled) {
+          setCategory(null);
+          setRelated([]);
         }
+      } catch {
+        if (!cancelled) {
+          setProduct(null);
+          setCategory(null);
+          setRelated([]);
+          setError(t('general.error'));
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setLoading(false);
     })();
 
     return () => { cancelled = true; };
-  }, [id]);
+  }, [id, t]);
 
   const handleAddToCart = () => {
     if (!product || !product.inStock) return;
@@ -59,6 +80,27 @@ export default function ProductPage() {
   };
 
   if (loading) return <Spinner />;
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+        <div className="mt-16 flex flex-col items-center text-center">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-stone-100 text-stone-400">
+            <ShoppingCart size={36} />
+          </div>
+          <h2 className="text-xl font-bold text-stone-700">{t('general.error')}</h2>
+          <p className="mt-2 max-w-md text-sm leading-7 text-stone-500">{error}</p>
+          <Link
+            to="/"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-stone-900 px-6 py-3 text-sm font-bold text-white shadow-card transition hover:bg-primary"
+          >
+            <Home size={16} />
+            {t('notFound.backHome')}
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -85,6 +127,8 @@ export default function ProductPage() {
 
   const displayName = getDisplayName(product, locale);
   const displayDesc = getDisplayDescription(product, locale);
+  const categoryName = getDisplayCategoryName(category, locale);
+  const emoji = getProductEmoji(product);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
@@ -92,7 +136,7 @@ export default function ProductPage() {
       <Breadcrumb
         items={[
           ...(category
-            ? [{ label: category.name, to: `/category/${category.slug}` }]
+            ? [{ label: categoryName, to: `/category/${category.slug}` }]
             : []),
           { label: displayName },
         ]}
@@ -111,11 +155,17 @@ export default function ProductPage() {
       <div className="mt-6 grid gap-8 md:grid-cols-2">
         {/* Image */}
         <div className="relative overflow-hidden rounded-3xl border border-stone-200/80 bg-stone-50 shadow-sm">
-          <img
-            src={product.image}
-            alt={displayName}
-            className="aspect-square w-full object-cover"
-          />
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={displayName}
+              className="aspect-square w-full object-cover"
+            />
+          ) : (
+            <div className="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-7xl md:text-8xl">
+              <span aria-hidden="true">{emoji}</span>
+            </div>
+          )}
           {product.badge && (
             <span className="absolute top-4 start-4 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-white shadow-md">
               {product.badge}
@@ -132,7 +182,7 @@ export default function ProductPage() {
               className="inline-flex w-fit items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-600 shadow-sm transition hover:border-primary hover:text-primary"
             >
               <span>{category.emoji}</span>
-              {category.name}
+              {categoryName}
             </Link>
           )}
 

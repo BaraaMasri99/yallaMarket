@@ -12,6 +12,14 @@ export function getDisplayName(item, locale) {
   return locale === 'en' && item.nameEn ? item.nameEn : item.name;
 }
 
+export function getDisplayCategoryName(category, locale) {
+  if (!category) return '';
+  if (locale === 'en') {
+    return category.nameEn || category.name_en || category.name || '';
+  }
+  return category.nameAr || category.name_ar || category.name || '';
+}
+
 /**
  * Return the display description for a product based on locale.
  * @param {{ description: string, descriptionEn?: string }} item
@@ -22,6 +30,47 @@ export function getDisplayDescription(item, locale) {
   return locale === 'en' && item.descriptionEn
     ? item.descriptionEn
     : item.description;
+}
+
+export function getProductEmoji(product) {
+  const text = normalizeSearchText(
+    [
+      product?.name,
+      product?.nameEn,
+      product?.name_en,
+      product?.description,
+      product?.descriptionEn,
+      product?.description_en,
+      product?.categoryName,
+      product?.category_name,
+    ].filter(Boolean).join(' ')
+  );
+
+  if (text.includes('playstation') || text.includes('بلايستيشن')) return '🎮';
+  if (text.includes('xbox') || text.includes('اكس بوكس')) return '🕹️';
+  if (text.includes('steam')) return '💻';
+  if (text.includes('netflix') || text.includes('نتفلكس')) return '🎬';
+  if (text.includes('spotify') || text.includes('سبوتيفاي')) return '🎧';
+  if (text.includes('pubg') || text.includes('شدات')) return '🎮';
+  if (text.includes('mobile') || text.includes('جوال') || text.includes('رصيد')) return '📱';
+  if (text.includes('gift') || text.includes('هديه') || text.includes('قسيمه')) return '🎁';
+  if (text.includes('card') || text.includes('بطاقه') || text.includes('كرت')) return '💳';
+  if (text.includes('subscription') || text.includes('اشتراك')) return '📦';
+  if (text.includes('software') || text.includes('key') || text.includes('مفتاح')) return '🔐';
+
+  return '🛒';
+}
+
+export function normalizeSearchText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**

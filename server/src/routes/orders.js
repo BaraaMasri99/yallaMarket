@@ -7,9 +7,9 @@ const router = Router();
 const VALID_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
 
 // POST /api/orders  — place an order
-// Body: { user_id, shipping_address, notes?, items: [{ product_id, quantity }] }
+// Body: { user_id, shipping_address, payment_method?, notes?, items: [{ product_id, quantity }] }
 router.post('/', (req, res) => {
-  const { user_id, shipping_address, notes = '', items } = req.body;
+  const { user_id, shipping_address, payment_method = 'cash', notes = '', items } = req.body;
 
   if (!user_id || !shipping_address || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ message: 'user_id, shipping_address, and items are required' });
@@ -47,9 +47,9 @@ router.post('/', (req, res) => {
 
     const orderResult = db
       .prepare(
-        'INSERT INTO orders (user_id, shipping_address, notes, total_price) VALUES (?, ?, ?, ?)'
+        'INSERT INTO orders (user_id, shipping_address, payment_method, notes, total_price) VALUES (?, ?, ?, ?, ?)'
       )
-      .run(user_id, shipping_address, notes, total_price);
+      .run(user_id, shipping_address, payment_method, notes, total_price);
 
     orderId = orderResult.lastInsertRowid;
 

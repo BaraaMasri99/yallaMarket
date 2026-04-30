@@ -9,7 +9,11 @@ import {
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { getDisplayName, formatPrice } from '../utils/helpers';
+import {
+  formatPrice,
+  getDisplayName,
+  getProductEmoji,
+} from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
 import OrderSummary from '../components/OrderSummary';
 import BackLink from '../components/BackLink';
@@ -53,11 +57,6 @@ export default function CheckoutPage() {
     e.preventDefault();
     setSubmitError('');
 
-    if (!currentUser?.id) {
-      setSubmitError(t('auth.loginError'));
-      return;
-    }
-
     const formData = new FormData(e.target);
     const newErrors = {};
     let hasError = false;
@@ -79,6 +78,11 @@ export default function CheckoutPage() {
 
     if (hasError) return;
 
+    if (!currentUser?.id) {
+      setSubmitError(t('checkout.loginRequired'));
+      return;
+    }
+
     const addressParts = [
       formData.get('city'),
       formData.get('street'),
@@ -90,6 +94,7 @@ export default function CheckoutPage() {
       await createOrder({
         userId: currentUser.id,
         shippingAddress: addressParts.join(', '),
+        paymentMethod,
         notes: formData.get('notes') || '',
         items,
       });
@@ -271,11 +276,17 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 text-sm">
                   <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                    <img
-                      src={item.image}
-                      alt={getDisplayName(item, locale)}
-                      className="h-full w-full object-cover"
-                    />
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={getDisplayName(item, locale)}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-xl">
+                        <span aria-hidden="true">{getProductEmoji(item)}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 truncate text-stone-700">
                     {getDisplayName(item, locale)} × {item.qty}

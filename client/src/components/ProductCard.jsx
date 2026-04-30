@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { getDisplayName, formatPrice } from '../utils/helpers';
+import {
+  formatPrice,
+  getDisplayName,
+  getProductEmoji,
+} from '../utils/helpers';
 
 /**
  * Product card used in category pages and related products.
@@ -14,6 +18,7 @@ export default function ProductCard({ product }) {
   const [added, setAdded] = useState(false);
 
   const displayName = getDisplayName(product, locale);
+  const emoji = getProductEmoji(product);
 
   const handleAdd = (e) => {
     e.preventDefault(); // don't navigate
@@ -31,12 +36,18 @@ export default function ProductCard({ product }) {
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-stone-100">
-        <img
-          src={product.image}
-          alt={displayName}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          loading="lazy"
-        />
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={displayName}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-5xl transition-transform duration-500 group-hover:scale-110">
+            <span aria-hidden="true">{emoji}</span>
+          </div>
+        )}
 
         {/* Badge */}
         {product.badge && (

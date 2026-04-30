@@ -10,8 +10,10 @@ import {
   X,
 } from 'lucide-react';
 import CategoryCard from '../components/CategoryCard';
+import Spinner from '../components/Spinner';
 import { useLanguage } from '../context/LanguageContext';
 import { getAllCategories } from '../services/categoryService';
+import { normalizeSearchText } from '../utils/helpers';
 
 /* ─── component ─── */
 
@@ -19,24 +21,35 @@ export default function Home() {
   const { t } = useLanguage();
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const cats = await getAllCategories();
-      if (!cancelled) setCategories(cats);
+      setLoading(true);
+      setError('');
+      try {
+        const cats = await getAllCategories();
+        if (!cancelled) setCategories(cats);
+      } catch {
+        if (!cancelled) setError(t('general.error'));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [t]);
 
   // Filter categories by search query (matches name or nameEn)
   const filteredCategories = useMemo(() => {
     if (!searchQuery.trim()) return categories;
-    const q = searchQuery.trim().toLowerCase();
+    const q = normalizeSearchText(searchQuery);
     return categories.filter(
       (cat) =>
-        cat.name?.toLowerCase().includes(q) ||
-        cat.nameEn?.toLowerCase().includes(q)
+        normalizeSearchText(cat.name).includes(q) ||
+        normalizeSearchText(cat.nameEn).includes(q) ||
+        normalizeSearchText(cat.name_en).includes(q)
     );
   }, [categories, searchQuery]);
 
@@ -131,7 +144,13 @@ export default function Home() {
           </h2>
         </div>
 
-        {filteredCategories.length > 0 ? (
+        {loading ? (
+          <Spinner />
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <p className="text-stone-500">{error}</p>
+          </div>
+        ) : filteredCategories.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {filteredCategories.map((cat) => (
               <CategoryCard key={cat.id} category={cat} />
@@ -170,7 +189,7 @@ export default function Home() {
               </p>
             </div>
             <Link
-              to="/category/vegetables-fruits"
+              to="/category/game-cards"
               className="shrink-0 rounded-full bg-primary px-8 py-3 text-sm font-bold text-white shadow-card transition hover:brightness-110"
             >
               {t('cta.btn')}

@@ -1,6 +1,6 @@
 # YallaMarket
 
-YallaMarket is a full-stack online grocery market application. It provides a React storefront for customers, an admin area for managing products and orders, and an Express API backed by a local SQLite database.
+YallaMarket is a full-stack digital marketplace for game cards, subscriptions, mobile balance, and digital gift products. It provides a React storefront for customers, an admin area for managing products and orders, and an Express API backed by a local SQLite database.
 
 ## Project Status
 
@@ -20,9 +20,9 @@ The project is functional and under active development. The current implementati
 
 ### Customer
 
-- Browse grocery categories and products
+- Browse digital product categories and products
 - View product details and related products
-- Search products by Arabic or English names
+- Search products by Arabic or English names within categories
 - Register, log in, and log out
 - Add items to the cart and update quantities
 - Place orders through checkout
@@ -41,7 +41,7 @@ The project is functional and under active development. The current implementati
 - JWT-based authentication helpers
 - Admin-only route protection
 - Product, category, authentication, and order endpoints
-- Catalog and admin seed scripts
+- Catalog and admin seed scripts for a clean local SQLite setup
 
 ## Project Structure
 

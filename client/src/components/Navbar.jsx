@@ -136,7 +136,7 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/category/vegetables-fruits"
+            to="/category/game-cards"
             className="hidden rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 md:inline-flex"
           >
             {t('nav.startShopping')}

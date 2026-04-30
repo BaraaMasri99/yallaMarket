@@ -8,10 +8,11 @@ export function updateOrderStatus(orderId, status, token) {
   return api.put(`/api/orders/${orderId}/status`, { status }, authConfig(token));
 }
 
-export function createOrder({ userId, shippingAddress, notes = '', items }) {
+export function createOrder({ userId, shippingAddress, paymentMethod = 'cash', notes = '', items }) {
   return api.post('/api/orders', {
     user_id: userId,
     shipping_address: shippingAddress,
+    payment_method: paymentMethod,
     notes,
     items: items.map((item) => ({
       product_id: item.id,

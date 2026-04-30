@@ -26,7 +26,7 @@ router.get('/:id', (req, res) => {
 
 // POST /api/categories  (admin)
 router.post('/', requireAdmin, (req, res) => {
-  const { name, slug, image = '', emoji = '', gradient = '' } = req.body;
+  const { name, name_en = '', slug, image = '', emoji = '', gradient = '' } = req.body;
 
   if (!name || !slug) {
     return res.status(400).json({ message: 'name and slug are required' });
@@ -34,9 +34,9 @@ router.post('/', requireAdmin, (req, res) => {
 
   const result = db
     .prepare(
-      'INSERT INTO categories (name, slug, image, emoji, gradient) VALUES (?, ?, ?, ?, ?)'
+      'INSERT INTO categories (name, name_en, slug, image, emoji, gradient) VALUES (?, ?, ?, ?, ?, ?)'
     )
-    .run(name, slug, image, emoji, gradient);
+    .run(name, name_en, slug, image, emoji, gradient);
 
   const created = db.prepare('SELECT * FROM categories WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json(created);
@@ -47,18 +47,27 @@ router.put('/:id', requireAdmin, (req, res) => {
   const existing = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ message: 'Category not found' });
 
-  const { name, slug, image, emoji, gradient } = req.body;
+  const { name, name_en, slug, image, emoji, gradient } = req.body;
 
   db.prepare(
     `UPDATE categories SET
       name     = COALESCE(?, name),
+      name_en  = COALESCE(?, name_en),
       slug     = COALESCE(?, slug),
       image    = COALESCE(?, image),
       emoji    = COALESCE(?, emoji),
       gradient = COALESCE(?, gradient),
       updated_at = CURRENT_TIMESTAMP
     WHERE id = ?`
-  ).run(name ?? null, slug ?? null, image ?? null, emoji ?? null, gradient ?? null, req.params.id);
+  ).run(
+    name ?? null,
+    name_en ?? null,
+    slug ?? null,
+    image ?? null,
+    emoji ?? null,
+    gradient ?? null,
+    req.params.id
+  );
 
   res.json(db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id));
 });

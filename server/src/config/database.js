@@ -19,6 +19,7 @@ export function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
+      name_en TEXT NOT NULL DEFAULT '',
       slug TEXT NOT NULL UNIQUE,
       image TEXT NOT NULL DEFAULT '',
       emoji TEXT NOT NULL DEFAULT '',
@@ -70,11 +71,14 @@ export function initializeDatabase() {
       status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
       total_price REAL NOT NULL CHECK(total_price >= 0),
       shipping_address TEXT NOT NULL,
+      payment_method TEXT NOT NULL DEFAULT 'cash',
       notes TEXT NOT NULL DEFAULT '',
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  migrateOrdersTable();
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS order_items (
@@ -98,6 +102,19 @@ function migrateCategoriesTable() {
 
   if (!columnNames.has('gradient')) {
     db.exec("ALTER TABLE categories ADD COLUMN gradient TEXT NOT NULL DEFAULT ''");
+  }
+
+  if (!columnNames.has('name_en')) {
+    db.exec("ALTER TABLE categories ADD COLUMN name_en TEXT NOT NULL DEFAULT ''");
+  }
+}
+
+function migrateOrdersTable() {
+  const columns = db.prepare('PRAGMA table_info(orders)').all();
+  const columnNames = new Set(columns.map((column) => column.name));
+
+  if (!columnNames.has('payment_method')) {
+    db.exec("ALTER TABLE orders ADD COLUMN payment_method TEXT NOT NULL DEFAULT 'cash'");
   }
 }
 

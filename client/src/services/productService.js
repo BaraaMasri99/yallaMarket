@@ -13,6 +13,8 @@ function normalizeProduct(product) {
     descriptionEn: product.descriptionEn ?? product.description_en ?? '',
     price: Number(product.price || 0),
     stock,
+    image: product.image || '',
+    unit: product.unit || '',
     inStock: product.inStock ?? stock > 0,
   };
 }

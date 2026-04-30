@@ -7,7 +7,7 @@ const en = {
   // ── Navbar ──
   nav: {
     brand: 'YallaMarket',
-    tagline: 'Fresh picks, delivered fast',
+    tagline: 'Digital cards, delivered fast',
     home: 'Home',
     offers: 'Offers',
     categories: 'Categories',
@@ -22,9 +22,9 @@ const en = {
   // ── Hero ──
   hero: {
     badge: 'YallaMarket — Shop Smarter',
-    title: 'Everything your home needs, in one place',
+    title: 'Digital cards and balance products in one place',
     subtitle:
-      'Browse our diverse categories and order your favorite products quickly and easily. Fresh vegetables, bakery, meat, drinks, and more!',
+      'Browse game cards, subscriptions, mobile balance, and digital gift products quickly and easily.',
     searchPlaceholder: 'Search for a product...',
     searchBtn: 'Search',
     noResults: 'No categories match your search',
@@ -35,8 +35,8 @@ const en = {
   highlights: {
     fastDelivery: 'Fast Delivery',
     fastDeliveryText: 'We deliver your order to your doorstep as fast as possible.',
-    freshProducts: 'Fresh Products',
-    freshProductsText: 'Fresh vegetables, fruits, and meats daily from the best suppliers.',
+    freshProducts: 'Digital Products',
+    freshProductsText: 'Game cards, subscriptions, balance top-ups, and gift cards from trusted providers.',
     securePayment: 'Secure Payment',
     securePaymentText: 'Multiple secure payment methods for your convenience.',
   },
@@ -47,12 +47,14 @@ const en = {
     sectionTitle: 'Choose what you need',
     productsCount: 'products',
     emptyText: 'No products in this category yet',
+    searchPlaceholder: 'Search within this category...',
+    noSearchResults: 'No products match your search in this category',
   },
 
   // ── CTA ──
   cta: {
-    title: 'Fast delivery right to your door',
-    text: 'Choose your products and receive them in no time. We cover all areas.',
+    title: 'Fast and secure digital delivery',
+    text: 'Choose your digital product and receive order details quickly after confirmation.',
     btn: 'Start shopping now',
   },
 
@@ -107,6 +109,7 @@ const en = {
     creditCard: 'Credit Card',
     orderSummary: 'Order Summary',
     placeOrder: 'Place Order',
+    loginRequired: 'Please log in after completing the form to place your order.',
     orderSuccess: 'Your order has been placed!',
     orderSuccessText: "Thank you! We'll contact you soon to confirm delivery.",
     backToHome: 'Back to Home',
@@ -124,7 +127,7 @@ const en = {
     emailPlaceholder: 'Your email',
     subscribe: 'Subscribe',
     description:
-      'Your go-to online store for daily shopping. Fresh vegetables, bakery, meats, and everything your home needs at the tap of a button.',
+      'Your online store for game cards, subscriptions, mobile balance, and digital gift products.',
     rights: 'All rights reserved.',
     madeWith: 'Made with ❤️ in Palestine',
     privacy: 'Privacy Policy',
