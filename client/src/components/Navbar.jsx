@@ -10,12 +10,12 @@ export default function Navbar() {
   const { currentUser, isAuthenticated, logout } = useAuth();
   const { t, locale, toggleLanguage } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { pathname } = useLocation();
+  const { hash, pathname } = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     setMobileOpen(false);
-  }, [pathname]);
+  }, [hash, pathname]);
 
   const navLinks = [
     { label: t('nav.home'), to: '/' },
@@ -26,6 +26,17 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     navigate('/', { replace: true });
+  };
+
+  const handleAnchorClick = (to) => (event) => {
+    if (!to.startsWith('/#') || pathname !== '/' || hash !== to.slice(1)) return;
+
+    event.preventDefault();
+    document.getElementById(to.slice(2))?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+    setMobileOpen(false);
   };
 
   const displayName = currentUser?.full_name || currentUser?.fullName || currentUser?.email || '';
@@ -56,17 +67,25 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`text-sm font-semibold transition hover:text-primary ${
-                pathname === link.to ? 'text-primary' : 'text-stone-700'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive =
+              link.to === '/'
+                ? pathname === '/' && !hash
+                : `${pathname}${hash}` === link.to;
+
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={handleAnchorClick(link.to)}
+                className={`text-sm font-semibold transition hover:text-primary ${
+                  isActive ? 'text-primary' : 'text-stone-700'
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -136,7 +155,8 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/category/game-cards"
+            to="/#categories"
+            onClick={handleAnchorClick('/#categories')}
             className="hidden rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 md:inline-flex"
           >
             {t('nav.startShopping')}
@@ -147,17 +167,25 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="border-t border-stone-200/80 bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-stone-50 hover:text-primary ${
-                  pathname === link.to ? 'bg-primary/5 text-primary' : 'text-stone-700'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive =
+                link.to === '/'
+                  ? pathname === '/' && !hash
+                  : `${pathname}${hash}` === link.to;
+
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={handleAnchorClick(link.to)}
+                  className={`rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-stone-50 hover:text-primary ${
+                    isActive ? 'bg-primary/5 text-primary' : 'text-stone-700'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
 
             <button
               type="button"

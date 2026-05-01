@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Phone, Mail, MapPin, Clock, Facebook, Instagram, Twitter } from 'lucide-react';
+import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { subscribeToNewsletter } from '../services/newsletterService';
 
 const contactInfo = [
   { icon: Phone, text: '0599-123-456' },
@@ -17,13 +19,52 @@ const socials = [
 
 export default function Footer() {
   const { t } = useLanguage();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState({ type: '', message: '' });
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const quickLinks = [
     { label: t('nav.home'), to: '/' },
-    { label: t('nav.categories'), to: '/' },
-    { label: t('nav.about'), to: '/' },
+    { label: t('nav.categories'), to: '/#categories' },
+    { label: t('nav.about'), to: '/#about' },
     { label: t('footer.privacy'), to: '/' },
   ];
+
+  const handleNewsletterSubmit = async (event) => {
+    event.preventDefault();
+
+    const email = newsletterEmail.trim();
+    setNewsletterStatus({ type: '', message: '' });
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setNewsletterStatus({
+        type: 'error',
+        message: t('footer.invalidEmail'),
+      });
+      return;
+    }
+
+    setIsSubscribing(true);
+
+    try {
+      await subscribeToNewsletter(email);
+      setNewsletterEmail('');
+      setNewsletterStatus({
+        type: 'success',
+        message: t('footer.subscribeSuccess'),
+      });
+    } catch (error) {
+      setNewsletterStatus({
+        type: 'error',
+        message:
+          error.status === 409
+            ? t('footer.alreadySubscribed')
+            : t('footer.subscribeError'),
+      });
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   return (
     <footer className="border-t border-stone-800 bg-stone-950 text-white">
@@ -102,19 +143,34 @@ export default function Footer() {
             <p className="mb-4 text-sm leading-7 text-stone-400">
               {t('footer.newsletterText')}
             </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder={t('footer.emailPlaceholder')}
-                className="flex-1 rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white outline-none placeholder:text-stone-500 focus:border-primary transition"
-              />
-              <button
-                type="button"
-                className="shrink-0 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
-              >
-                {t('footer.subscribe')}
-              </button>
-            </div>
+            <form className="space-y-2" onSubmit={handleNewsletterSubmit}>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={newsletterEmail}
+                  onChange={(event) => setNewsletterEmail(event.target.value)}
+                  placeholder={t('footer.emailPlaceholder')}
+                  disabled={isSubscribing}
+                  className="flex-1 rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white outline-none placeholder:text-stone-500 focus:border-primary transition"
+                />
+                <button
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="shrink-0 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isSubscribing ? t('footer.subscribing') : t('footer.subscribe')}
+                </button>
+              </div>
+              {newsletterStatus.message && (
+                <p
+                  className={`text-xs ${
+                    newsletterStatus.type === 'success' ? 'text-emerald-400' : 'text-red-400'
+                  }`}
+                >
+                  {newsletterStatus.message}
+                </p>
+              )}
+            </form>
           </div>
 
         </div>

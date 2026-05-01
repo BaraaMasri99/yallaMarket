@@ -58,6 +58,18 @@ const en = {
     btn: 'Start shopping now',
   },
 
+  about: {
+    label: 'About YallaMarket',
+    title: 'A digital store for cards, balance, and subscriptions',
+    text: 'YallaMarket helps customers buy digital cards, service subscriptions, game balance, and electronic vouchers quickly and clearly. Categories and product details are organized so shoppers can choose what they need and place an order without extra friction.',
+    digitalTitle: 'Digital product variety',
+    digitalText: 'Game cards, subscriptions, balance top-ups, and vouchers from trusted providers.',
+    trustedTitle: 'Clear shopping flow',
+    trustedText: 'Product details and pricing are easy to review before adding items to the cart.',
+    supportTitle: 'Order follow-up',
+    supportText: 'Orders can be reviewed and confirmed with customers when details are needed.',
+  },
+
   // ── Product ──
   product: {
     addToCart: 'Add to Cart',
@@ -126,6 +138,11 @@ const en = {
     newsletterText: 'Get the latest offers and discounts directly to your email.',
     emailPlaceholder: 'Your email',
     subscribe: 'Subscribe',
+    subscribing: 'Subscribing...',
+    invalidEmail: 'Enter a valid email address',
+    subscribeSuccess: 'Thanks, you are subscribed.',
+    alreadySubscribed: 'This email is already subscribed.',
+    subscribeError: 'Could not subscribe right now. Please try again.',
     description:
       'Your online store for game cards, subscriptions, mobile balance, and digital gift products.',
     rights: 'All rights reserved.',

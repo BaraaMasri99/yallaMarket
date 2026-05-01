@@ -134,7 +134,7 @@ export default function Home() {
       </section>
 
       {/* ══════ Categories Grid ══════ */}
-      <section className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-16">
+      <section id="categories" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-10 md:px-6 md:py-16">
         <div className="mb-8 text-center md:text-start">
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-primary">
             {t('categories.sectionLabel')}
@@ -173,6 +173,20 @@ export default function Home() {
         )}
       </section>
 
+      {/* About */}
+      <section id="about" className="bg-white scroll-mt-24">
+        <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
+          <div className="max-w-3xl">
+            <h2 className="mt-2 text-3xl font-black md:text-4xl">
+              {t('about.title')}
+            </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-8 text-stone-600 md:text-base">
+              {t('about.text')}
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ══════ Delivery CTA ══════ */}
       <section className="mx-auto max-w-7xl px-4 pb-12 md:px-6 md:pb-20">
         <div className="rounded-[2rem] bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 p-8 text-white shadow-2xl md:p-12">
@@ -189,7 +203,7 @@ export default function Home() {
               </p>
             </div>
             <Link
-              to="/category/game-cards"
+              to="/#categories"
               className="shrink-0 rounded-full bg-primary px-8 py-3 text-sm font-bold text-white shadow-card transition hover:brightness-110"
             >
               {t('cta.btn')}

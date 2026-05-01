@@ -9,12 +9,21 @@ import Toast from './Toast';
  * Scrolls to top on every route change.
  */
 export default function Layout() {
-  const { pathname } = useLocation();
+  const { hash, pathname } = useLocation();
 
-  // Scroll to top on every route change
   useEffect(() => {
+    if (hash) {
+      window.setTimeout(() => {
+        document.getElementById(hash.slice(1))?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 0);
+      return;
+    }
+
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [pathname]);
+  }, [hash, pathname]);
 
   return (
     <div className="min-h-screen flex flex-col text-stone-900">
