@@ -1,25 +1,59 @@
 import { Router } from 'express';
 import { db } from '../config/database.js';
 import { requireAdmin } from '../middleware/adminAuth.js';
+import { requireAuth } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
 const VALID_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+const DELIVERY_THRESHOLD = 100;
+const DELIVERY_FEE = 10;
 
-// POST /api/orders  — place an order
-// Body: { user_id, shipping_address, payment_method?, notes?, items: [{ product_id, quantity }] }
-router.post('/', (req, res) => {
-  const { user_id, shipping_address, payment_method = 'cash', notes = '', items } = req.body;
+// POST /api/orders - place an order for the authenticated user.
+// Body: { shipping_address, payment_method?, notes?, items: [{ product_id, quantity }] }
+router.post('/', requireAuth, (req, res) => {
+  const {
+    first_name,
+    firstName,
+    last_name,
+    lastName,
+    phone,
+    email = '',
+    city,
+    address,
+    shipping_address,
+    payment_method,
+    paymentMethod,
+    notes = '',
+    items,
+  } = req.body;
+  const userId = req.user.id;
+  const customerFirstName = cleanText(first_name || firstName);
+  const customerLastName = cleanText(last_name || lastName);
+  const customerPhone = cleanText(phone);
+  const customerEmail = cleanText(email).toLowerCase();
+  const customerCity = cleanText(city);
+  const customerAddress = cleanText(address || shipping_address);
+  const paymentMethodValue = cleanText(payment_method || paymentMethod || 'cash');
+  const orderNotes = cleanText(notes);
+  const shippingAddress = [customerCity, customerAddress].filter(Boolean).join(', ');
 
-  if (!user_id || !shipping_address || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ message: 'user_id, shipping_address, and items are required' });
+  if (
+    !customerFirstName ||
+    !customerLastName ||
+    !customerPhone ||
+    !customerCity ||
+    !customerAddress ||
+    !Array.isArray(items) ||
+    items.length === 0
+  ) {
+    return res.status(400).json({
+      message: 'first_name, last_name, phone, city, address, and items are required',
+    });
   }
 
-  const user = db.prepare('SELECT id FROM users WHERE id = ?').get(user_id);
-  if (!user) return res.status(400).json({ message: 'user_id does not exist' });
-
-  // Validate all products and compute total
-  let total_price = 0;
+  // Validate all products and compute totals server-side.
+  let subtotal = 0;
   const resolvedItems = [];
 
   for (const item of items) {
@@ -35,9 +69,12 @@ router.post('/', (req, res) => {
       return res.status(400).json({ message: `Insufficient stock for product: ${product.name}` });
     }
 
-    total_price += product.price * item.quantity;
+    subtotal += product.price * item.quantity;
     resolvedItems.push({ product, quantity: item.quantity });
   }
+
+  const deliveryFee = subtotal >= DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
+  const total = subtotal + deliveryFee;
 
   // Insert order + items in a transaction
   let orderId;
@@ -47,9 +84,39 @@ router.post('/', (req, res) => {
 
     const orderResult = db
       .prepare(
-        'INSERT INTO orders (user_id, shipping_address, payment_method, notes, total_price) VALUES (?, ?, ?, ?, ?)'
+        `INSERT INTO orders (
+          user_id,
+          customer_first_name,
+          customer_last_name,
+          customer_phone,
+          customer_email,
+          city,
+          address,
+          shipping_address,
+          payment_method,
+          notes,
+          subtotal,
+          delivery_fee,
+          total,
+          total_price
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
-      .run(user_id, shipping_address, payment_method, notes, total_price);
+      .run(
+        userId,
+        customerFirstName,
+        customerLastName,
+        customerPhone,
+        customerEmail,
+        customerCity,
+        customerAddress,
+        shippingAddress,
+        paymentMethodValue,
+        orderNotes,
+        subtotal,
+        deliveryFee,
+        total,
+        total
+      );
 
     orderId = orderResult.lastInsertRowid;
 
@@ -71,20 +138,16 @@ router.post('/', (req, res) => {
   res.status(201).json(getOrderWithItems(orderId));
 });
 
-// GET /api/orders/my?user_id=  — get orders for a specific user
-// TODO: replace user_id query param with JWT once auth is built
-router.get('/my', (req, res) => {
-  const { user_id } = req.query;
-  if (!user_id) return res.status(400).json({ message: 'user_id query param required' });
-
+// GET /api/orders/my - get orders for the authenticated user.
+router.get('/my', requireAuth, (req, res) => {
   const orders = db
     .prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC')
-    .all(user_id);
+    .all(req.user.id);
 
   res.json(orders.map((o) => getOrderWithItems(o.id)));
 });
 
-// GET /api/orders  — get all orders (admin)
+// GET /api/orders - get all orders (admin)
 router.get('/', requireAdmin, (req, res) => {
   const { status, page = 1, limit = 20 } = req.query;
   const offset = (Number(page) - 1) * Number(limit);
@@ -104,14 +167,18 @@ router.get('/', requireAdmin, (req, res) => {
   res.json(orders.map((o) => getOrderWithItems(o.id)));
 });
 
-// GET /api/orders/:id  — get single order
-router.get('/:id', (req, res) => {
+// GET /api/orders/:id - admins can read any order; customers can only read their own.
+router.get('/:id', requireAuth, (req, res) => {
   const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
   if (!order) return res.status(404).json({ message: 'Order not found' });
+  if (req.user.role !== 'admin' && order.user_id !== req.user.id) {
+    return res.status(403).json({ message: 'You can only access your own orders' });
+  }
+
   res.json(getOrderWithItems(order.id));
 });
 
-// PUT /api/orders/:id/status  — update order status (admin)
+// PUT /api/orders/:id/status - update order status (admin)
 router.put('/:id/status', requireAdmin, (req, res) => {
   const { status } = req.body;
 
@@ -139,6 +206,10 @@ function getOrderWithItems(orderId) {
     )
     .all(orderId);
   return { ...order, items };
+}
+
+function cleanText(value) {
+  return String(value || '').trim();
 }
 
 export default router;

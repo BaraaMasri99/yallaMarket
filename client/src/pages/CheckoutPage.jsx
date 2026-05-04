@@ -22,7 +22,7 @@ import { createOrder } from '../services/orderService';
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
-  const { currentUser } = useAuth();
+  const { currentUser, token } = useAuth();
   const { t, locale } = useLanguage();
 
   const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -83,21 +83,27 @@ export default function CheckoutPage() {
       return;
     }
 
-    const addressParts = [
-      formData.get('city'),
+    const city = String(formData.get('city') || '').trim();
+    const address = [
       formData.get('street'),
       formData.get('building'),
-    ].filter(Boolean);
+    ].filter(Boolean).join(', ');
+    const shippingAddress = [city, address].filter(Boolean).join(', ');
 
     setSubmitting(true);
     try {
       await createOrder({
-        userId: currentUser.id,
-        shippingAddress: addressParts.join(', '),
+        firstName: String(formData.get('firstName') || '').trim(),
+        lastName: String(formData.get('lastName') || '').trim(),
+        phone: String(formData.get('phone') || '').trim(),
+        email: String(formData.get('email') || '').trim(),
+        city,
+        address,
+        shippingAddress,
         paymentMethod,
         notes: formData.get('notes') || '',
         items,
-      });
+      }, token);
       setSubmitted(true);
       clearCart();
     } catch (error) {

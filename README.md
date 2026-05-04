@@ -112,23 +112,22 @@ npm install
 
 ### 2. Configure Environment
 
-The server works with default development values, but you can create `server/.env` if you want to customize them:
+Create the server environment file before running seeders or starting the API:
 
-```env
-PORT=5000
-CLIENT_ORIGIN=http://localhost:5173
-DATABASE_PATH=./data/yalla-market.sqlite
-JWT_SECRET=change-this-secret
-JWT_EXPIRES_IN=7d
+```bash
+cd server
+cp .env.example .env
 ```
 
-For the frontend, create `client/.env` when the API is running on a different origin:
+Then edit `server/.env` and replace `JWT_SECRET` with a long random value. Do not commit real secrets.
+
+The server has development defaults for `PORT`, `CLIENT_ORIGIN`, `DATABASE_PATH`, and `JWT_EXPIRES_IN`, so only `JWT_SECRET` is required for local setup.
+
+The frontend does not need an environment file for the default local setup because Vite proxies `/api` requests to `http://localhost:5000`. Create `client/.env` only when the API runs on a different origin:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000
 ```
-
-If the frontend is served through a proxy or the same origin as the API, this variable can be omitted.
 
 ### 3. Seed Initial Data
 

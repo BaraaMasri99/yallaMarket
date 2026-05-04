@@ -69,6 +69,15 @@ export function initializeDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
       status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
+      customer_first_name TEXT NOT NULL DEFAULT '',
+      customer_last_name TEXT NOT NULL DEFAULT '',
+      customer_phone TEXT NOT NULL DEFAULT '',
+      customer_email TEXT NOT NULL DEFAULT '',
+      city TEXT NOT NULL DEFAULT '',
+      address TEXT NOT NULL DEFAULT '',
+      subtotal REAL NOT NULL DEFAULT 0 CHECK(subtotal >= 0),
+      delivery_fee REAL NOT NULL DEFAULT 0 CHECK(delivery_fee >= 0),
+      total REAL NOT NULL DEFAULT 0 CHECK(total >= 0),
       total_price REAL NOT NULL CHECK(total_price >= 0),
       shipping_address TEXT NOT NULL,
       payment_method TEXT NOT NULL DEFAULT 'cash',
@@ -124,6 +133,37 @@ function migrateOrdersTable() {
   if (!columnNames.has('payment_method')) {
     db.exec("ALTER TABLE orders ADD COLUMN payment_method TEXT NOT NULL DEFAULT 'cash'");
   }
+
+  const textColumns = [
+    'customer_first_name',
+    'customer_last_name',
+    'customer_phone',
+    'customer_email',
+    'city',
+    'address',
+  ];
+
+  for (const column of textColumns) {
+    if (!columnNames.has(column)) {
+      db.exec(`ALTER TABLE orders ADD COLUMN ${column} TEXT NOT NULL DEFAULT ''`);
+    }
+  }
+
+  const moneyColumns = ['subtotal', 'delivery_fee', 'total'];
+
+  for (const column of moneyColumns) {
+    if (!columnNames.has(column)) {
+      db.exec(`ALTER TABLE orders ADD COLUMN ${column} REAL NOT NULL DEFAULT 0`);
+    }
+  }
+
+  db.exec(`
+    UPDATE orders
+    SET
+      subtotal = CASE WHEN subtotal = 0 THEN total_price ELSE subtotal END,
+      total = CASE WHEN total = 0 THEN total_price ELSE total END,
+      address = CASE WHEN address = '' THEN shipping_address ELSE address END
+  `);
 }
 
 function migrateUsersTable() {

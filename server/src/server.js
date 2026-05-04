@@ -4,7 +4,7 @@ import { env } from './config/env.js';
 
 initializeDatabase();
 
-const PORT = process.env.PORT || env.port || 3000;
+const PORT = env.port;
 
 const server = app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

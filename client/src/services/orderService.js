@@ -8,9 +8,25 @@ export function updateOrderStatus(orderId, status, token) {
   return api.put(`/api/orders/${orderId}/status`, { status }, authConfig(token));
 }
 
-export function createOrder({ userId, shippingAddress, paymentMethod = 'cash', notes = '', items }) {
+export function createOrder({
+  firstName,
+  lastName,
+  phone,
+  email = '',
+  city,
+  address,
+  shippingAddress,
+  paymentMethod = 'cash',
+  notes = '',
+  items,
+}, token) {
   return api.post('/api/orders', {
-    user_id: userId,
+    first_name: firstName,
+    last_name: lastName,
+    phone,
+    email,
+    city,
+    address,
     shipping_address: shippingAddress,
     payment_method: paymentMethod,
     notes,
@@ -18,5 +34,5 @@ export function createOrder({ userId, shippingAddress, paymentMethod = 'cash', n
       product_id: item.id,
       quantity: item.qty,
     })),
-  });
+  }, authConfig(token));
 }
