@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import {
   formatPrice,
   getDisplayName,
+  getProductImageFallback,
   getProductEmoji,
 } from '../utils/helpers';
 import QuantitySelector from './QuantitySelector';
@@ -27,6 +28,10 @@ export default function CartItem({ item }) {
             src={item.image}
             alt={displayName}
             className="h-full w-full object-cover"
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = getProductImageFallback(item);
+            }}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-3xl">

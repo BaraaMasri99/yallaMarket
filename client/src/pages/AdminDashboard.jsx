@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react';
-import { ShoppingBag, DollarSign, Package, Users } from 'lucide-react';
-import Spinner from '../components/Spinner';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  AlertTriangle,
+  DollarSign,
+  FolderTree,
+  Package,
+  ShoppingBag,
+  Timer,
+  Users,
+} from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import { useAuth } from '../context/AuthContext';
-import { getAllProducts } from '../services/productService';
-import { getAllOrders } from '../services/orderService';
+import { getDashboardStats } from '../services/adminService';
 
 export default function AdminDashboard() {
   const { token } = useAuth();
@@ -15,95 +21,122 @@ export default function AdminDashboard() {
   useEffect(() => {
     let cancelled = false;
 
-    async function fetchStats() {
+    async function loadStats() {
+      setLoading(true);
+      setError(null);
       try {
-        const [products, orders] = await Promise.all([
-          getAllProducts(),
-          getAllOrders(token),
-        ]);
-
-        const totalRevenue = orders.reduce((sum, o) => sum + (o.total_price || 0), 0);
-
+        const nextStats = await getDashboardStats(token);
+        if (!cancelled) setStats(nextStats);
+      } catch (error) {
         if (!cancelled) {
-          setStats({
-            totalProducts: products.length,
-            totalOrders: orders.length,
-            totalRevenue,
-            totalUsers: '—',  // replace once users API is built
-          });
+          const details = error?.status
+            ? ` (HTTP ${error.status}${error?.message ? `: ${error.message}` : ''})`
+            : '';
+          setError(`تعذر تحميل الإحصائيات. تأكد من تشغيل الخادم وصلاحيات المدير${details}`);
         }
-      } catch (err) {
-        if (!cancelled) setError('تعذر تحميل الإحصائيات. تأكد من تشغيل الخادم.');
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetchStats();
+    loadStats();
     return () => { cancelled = true; };
   }, [token]);
 
+  const cards = useMemo(() => ([
+    {
+      icon: <ShoppingBag className="h-6 w-6" />,
+      label: 'إجمالي الطلبات',
+      value: stats?.totalOrders || 0,
+      color: 'bg-blue-50 text-blue-600',
+    },
+    {
+      icon: <DollarSign className="h-6 w-6" />,
+      label: 'إجمالي المبيعات',
+      value: stats?.totalSales || 0,
+      prefix: '₪ ',
+      decimals: 2,
+      color: 'bg-emerald-50 text-emerald-600',
+    },
+    {
+      icon: <Package className="h-6 w-6" />,
+      label: 'إجمالي المنتجات',
+      value: stats?.totalProducts || 0,
+      color: 'bg-amber-50 text-amber-600',
+    },
+    {
+      icon: <FolderTree className="h-6 w-6" />,
+      label: 'إجمالي الفئات',
+      value: stats?.totalCategories || 0,
+      color: 'bg-cyan-50 text-cyan-700',
+    },
+    {
+      icon: <Users className="h-6 w-6" />,
+      label: 'إجمالي المستخدمين',
+      value: stats?.totalUsers || 0,
+      color: 'bg-purple-50 text-purple-600',
+    },
+    {
+      icon: <Timer className="h-6 w-6" />,
+      label: 'طلبات قيد الانتظار',
+      value: stats?.pendingOrders || 0,
+      color: 'bg-orange-50 text-orange-600',
+    },
+    {
+      icon: <AlertTriangle className="h-6 w-6" />,
+      label: 'منتجات نفد مخزونها',
+      value: stats?.outOfStockProducts || 0,
+      color: 'bg-red-50 text-red-600',
+    },
+  ]), [stats]);
+
   return (
     <AdminLayout>
-      <div className="max-w-4xl">
-        <h1 className="text-2xl font-bold text-stone-800 mb-2">الإحصائيات العامة</h1>
-        <p className="text-stone-500 text-sm mb-8">نظرة عامة على حالة المتجر</p>
-
-        {loading && (
-          <div className="flex justify-center py-20">
-            <Spinner />
-          </div>
-        )}
+      <div dir="rtl">
+        <div className="mb-8">
+          <h1 className="mb-2 text-2xl font-bold text-stone-800">الإحصائيات العامة</h1>
+          <p className="text-sm text-stone-500">نظرة عامة مباشرة من قاعدة بيانات يلا ماركت</p>
+        </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-5 py-4 text-sm">
+          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        {stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <StatCard
-              icon={<ShoppingBag className="w-6 h-6" />}
-              label="إجمالي الطلبات"
-              value={stats.totalOrders}
-              color="bg-blue-50 text-blue-600"
-            />
-            <StatCard
-              icon={<DollarSign className="w-6 h-6" />}
-              label="إجمالي الإيرادات"
-              value={`₪ ${Number(stats.totalRevenue).toFixed(2)}`}
-              color="bg-emerald-50 text-emerald-600"
-            />
-            <StatCard
-              icon={<Package className="w-6 h-6" />}
-              label="إجمالي المنتجات"
-              value={stats.totalProducts}
-              color="bg-amber-50 text-amber-600"
-            />
-            <StatCard
-              icon={<Users className="w-6 h-6" />}
-              label="إجمالي المستخدمين"
-              value={stats.totalUsers}
-              color="bg-purple-50 text-purple-600"
-            />
-          </div>
-        )}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {loading
+            ? Array.from({ length: 7 }).map((_, index) => <StatSkeleton key={index} />)
+            : cards.map((card) => <StatCard key={card.label} {...card} />)}
+        </div>
       </div>
     </AdminLayout>
   );
 }
 
-function StatCard({ icon, label, value, color }) {
+function StatCard({ icon, label, value, prefix = '', decimals = 0, color }) {
+  const displayValue = Number(value || 0).toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+
   return (
-    <div className="bg-white rounded-2xl border border-stone-200 p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color}`}>
+    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+      <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${color}`}>
         {icon}
       </div>
-      <div>
-        <p className="text-stone-500 text-sm mb-1">{label}</p>
-        <p className="text-2xl font-bold text-stone-800">{value}</p>
-      </div>
+      <p className="mb-1 text-sm text-stone-500">{label}</p>
+      <p className="text-2xl font-bold text-stone-800">{prefix}{displayValue}</p>
+    </div>
+  );
+}
+
+function StatSkeleton() {
+  return (
+    <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+      <div className="mb-4 h-12 w-12 rounded-xl bg-stone-100" />
+      <div className="mb-3 h-4 w-24 rounded bg-stone-100" />
+      <div className="h-8 w-20 rounded bg-stone-100" />
     </div>
   );
 }

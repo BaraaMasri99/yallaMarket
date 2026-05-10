@@ -11,6 +11,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
+import AdminCategories from './pages/AdminCategories';
 import AdminRoute from './components/AdminRoute';
 
 export default function App() {
@@ -34,6 +35,10 @@ export default function App() {
         <Route
           path="/admin/products"
           element={<AdminRoute><AdminProducts /></AdminRoute>}
+        />
+        <Route
+          path="/admin/categories"
+          element={<AdminRoute><AdminCategories /></AdminRoute>}
         />
         <Route
           path="/admin/orders"

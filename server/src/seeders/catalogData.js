@@ -1,3 +1,5 @@
+import { resolveProductImage } from '../utils/productImages.js';
+
 export const categories = [
   {
     id: 4,
@@ -65,7 +67,7 @@ export const categories = [
   },
 ];
 
-export const products = [
+const baseProducts = [
   {
     id: 401,
     category_id: 4,
@@ -256,3 +258,8 @@ export const products = [
     stock: 10,
   },
 ];
+
+export const products = baseProducts.map((product) => ({
+  ...product,
+  image: resolveProductImage(product),
+}));

@@ -61,6 +61,32 @@ export function getProductEmoji(product) {
   return '🛒';
 }
 
+export function getProductImageFallback(product) {
+  const categoryId = Number(product?.categoryId ?? product?.category_id);
+
+  const fallbackQueries = {
+    1: 'fresh,vegetables,fruits,market',
+    2: 'healthy,food,organic,diet',
+    3: 'bakery,bread,pastry',
+    4: 'gaming,gift,card',
+    5: 'digital,subscription,streaming',
+    6: 'mobile,phone,recharge',
+    7: 'gift,card,shopping',
+    8: 'software,license,keyboard',
+    9: 'online,store,gift,card',
+    10: 'entertainment,subscription,streaming',
+    11: 'online,learning,productivity',
+    12: 'personal,care,hygiene',
+    13: 'sweets,chocolate,dessert',
+    14: 'nuts,roasted,snacks',
+    15: 'chips,snacks,popcorn',
+  };
+
+  const query = fallbackQueries[categoryId] || 'shopping,product,store';
+  const seed = Number(product?.id || 1);
+  return `https://loremflickr.com/800/600/${encodeURIComponent(query)}?lock=${seed}`;
+}
+
 export function normalizeSearchText(value) {
   return String(value || '')
     .toLowerCase()

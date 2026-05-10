@@ -26,7 +26,17 @@ router.get('/:id', (req, res) => {
 
 // POST /api/categories  (admin)
 router.post('/', requireAdmin, (req, res) => {
-  const { name, name_en = '', slug, image = '', emoji = '', gradient = '' } = req.body;
+  const {
+    name,
+    name_ar = name,
+    name_en = '',
+    description_ar = '',
+    description_en = '',
+    slug,
+    image = '',
+    emoji = '',
+    gradient = '',
+  } = req.body;
 
   if (!name || !slug) {
     return res.status(400).json({ message: 'name and slug are required' });
@@ -34,9 +44,11 @@ router.post('/', requireAdmin, (req, res) => {
 
   const result = db
     .prepare(
-      'INSERT INTO categories (name, name_en, slug, image, emoji, gradient) VALUES (?, ?, ?, ?, ?, ?)'
+      `INSERT INTO categories
+        (name, name_ar, name_en, description_ar, description_en, slug, image, emoji, gradient)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
-    .run(name, name_en, slug, image, emoji, gradient);
+    .run(name, name_ar, name_en, description_ar, description_en, slug, image, emoji, gradient);
 
   const created = db.prepare('SELECT * FROM categories WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json(created);
@@ -47,12 +59,15 @@ router.put('/:id', requireAdmin, (req, res) => {
   const existing = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ message: 'Category not found' });
 
-  const { name, name_en, slug, image, emoji, gradient } = req.body;
+  const { name, name_ar, name_en, description_ar, description_en, slug, image, emoji, gradient } = req.body;
 
   db.prepare(
     `UPDATE categories SET
       name     = COALESCE(?, name),
+      name_ar  = COALESCE(?, name_ar),
       name_en  = COALESCE(?, name_en),
+      description_ar = COALESCE(?, description_ar),
+      description_en = COALESCE(?, description_en),
       slug     = COALESCE(?, slug),
       image    = COALESCE(?, image),
       emoji    = COALESCE(?, emoji),
@@ -61,7 +76,10 @@ router.put('/:id', requireAdmin, (req, res) => {
     WHERE id = ?`
   ).run(
     name ?? null,
+    name_ar ?? name ?? null,
     name_en ?? null,
+    description_ar ?? null,
+    description_en ?? null,
     slug ?? null,
     image ?? null,
     emoji ?? null,
@@ -76,6 +94,13 @@ router.put('/:id', requireAdmin, (req, res) => {
 router.delete('/:id', requireAdmin, (req, res) => {
   const existing = db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ message: 'Category not found' });
+
+  const productsCount = db
+    .prepare('SELECT COUNT(*) AS count FROM products WHERE category_id = ?')
+    .get(req.params.id).count;
+  if (productsCount > 0) {
+    return res.status(409).json({ message: 'Cannot delete a category that still contains products' });
+  }
 
   db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
   res.json({ message: 'Category deleted' });

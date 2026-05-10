@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { db } from '../config/database.js';
 import { requireAdmin } from '../middleware/adminAuth.js';
+import { resolveProductImage } from '../utils/productImages.js';
 
 const router = Router();
 
@@ -130,6 +131,7 @@ router.delete('/:id', requireAdmin, (req, res) => {
 function toProduct(row) {
   return {
     ...row,
+    image: resolveProductImage(row),
     inStock: row.stock > 0,
     is_active: Boolean(row.is_active),
   };

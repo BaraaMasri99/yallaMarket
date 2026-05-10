@@ -1,9 +1,17 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, LogOut, Shield } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, FolderTree, LayoutDashboard, LogOut, Package, Shield, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+
+const NAV_ITEMS = [
+  { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/admin/products', label: 'Products', icon: Package },
+  { to: '/admin/categories', label: 'Categories', icon: FolderTree },
+  { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+];
 
 export default function AdminLayout({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser, logout } = useAuth();
 
   async function handleLogout() {
@@ -53,6 +61,26 @@ export default function AdminLayout({ children }) {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-10">
+        <nav className="mb-8 flex flex-wrap gap-2">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const active = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  active
+                    ? 'border-stone-900 bg-stone-900 text-white'
+                    : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300 hover:bg-stone-100'
+                }`}
+              >
+                <Icon size={16} />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
         {children}
       </main>
     </div>

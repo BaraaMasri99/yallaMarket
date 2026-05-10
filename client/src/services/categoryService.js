@@ -6,6 +6,8 @@ function normalizeCategory(category) {
     ...category,
     nameAr: category.nameAr ?? category.name_ar ?? category.name ?? '',
     nameEn: category.nameEn ?? category.name_en ?? '',
+    descriptionAr: category.descriptionAr ?? category.description_ar ?? '',
+    descriptionEn: category.descriptionEn ?? category.description_en ?? '',
     image: category.image || '',
     emoji: category.emoji || '🛍️',
     gradient: category.gradient || 'from-stone-300 to-stone-100',

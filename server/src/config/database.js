@@ -19,7 +19,10 @@ export function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
+      name_ar TEXT NOT NULL DEFAULT '',
       name_en TEXT NOT NULL DEFAULT '',
+      description_ar TEXT NOT NULL DEFAULT '',
+      description_en TEXT NOT NULL DEFAULT '',
       slug TEXT NOT NULL UNIQUE,
       image TEXT NOT NULL DEFAULT '',
       emoji TEXT NOT NULL DEFAULT '',
@@ -124,6 +127,21 @@ function migrateCategoriesTable() {
   if (!columnNames.has('name_en')) {
     db.exec("ALTER TABLE categories ADD COLUMN name_en TEXT NOT NULL DEFAULT ''");
   }
+
+  if (!columnNames.has('name_ar')) {
+    db.exec("ALTER TABLE categories ADD COLUMN name_ar TEXT NOT NULL DEFAULT ''");
+    db.exec("UPDATE categories SET name_ar = name WHERE name_ar = ''");
+  }
+
+  if (!columnNames.has('description_ar')) {
+    db.exec("ALTER TABLE categories ADD COLUMN description_ar TEXT NOT NULL DEFAULT ''");
+  }
+
+  if (!columnNames.has('description_en')) {
+    db.exec("ALTER TABLE categories ADD COLUMN description_en TEXT NOT NULL DEFAULT ''");
+  }
+
+  db.exec("UPDATE categories SET name_ar = name WHERE name_ar = ''");
 }
 
 function migrateOrdersTable() {

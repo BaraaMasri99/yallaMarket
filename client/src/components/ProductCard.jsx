@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import {
   formatPrice,
   getDisplayName,
+  getProductImageFallback,
   getProductEmoji,
 } from '../utils/helpers';
 
@@ -42,6 +43,10 @@ export default function ProductCard({ product }) {
             alt={displayName}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = getProductImageFallback(product);
+            }}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-5xl transition-transform duration-500 group-hover:scale-110">

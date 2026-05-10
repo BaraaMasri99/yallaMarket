@@ -9,6 +9,7 @@ import {
   getDisplayCategoryName,
   getDisplayDescription,
   getDisplayName,
+  getProductImageFallback,
   getProductEmoji,
 } from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
@@ -160,6 +161,10 @@ export default function ProductPage() {
               src={product.image}
               alt={displayName}
               className="aspect-square w-full object-cover"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = getProductImageFallback(product);
+              }}
             />
           ) : (
             <div className="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-7xl md:text-8xl">

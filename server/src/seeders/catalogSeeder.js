@@ -4,11 +4,14 @@ import { db, initializeDatabase } from '../config/database.js';
 initializeDatabase();
 
 const insertCategory = db.prepare(`
-  INSERT INTO categories (id, name, name_en, slug, image, emoji, gradient)
-  VALUES (?, ?, ?, ?, ?, ?, ?)
+  INSERT INTO categories (id, name, name_ar, name_en, description_ar, description_en, slug, image, emoji, gradient)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   ON CONFLICT(id) DO UPDATE SET
     name = excluded.name,
+    name_ar = excluded.name_ar,
     name_en = excluded.name_en,
+    description_ar = excluded.description_ar,
+    description_en = excluded.description_en,
     slug = excluded.slug,
     image = excluded.image,
     emoji = excluded.emoji,
@@ -53,7 +56,10 @@ try {
     insertCategory.run(
       category.id,
       category.name,
+      category.name_ar || category.name || '',
       category.name_en || category.nameEn || '',
+      category.description_ar || '',
+      category.description_en || '',
       category.slug,
       category.image || '',
       category.emoji || '',
