@@ -1,7 +1,7 @@
 # YallaMarket
 
 <p align="center">
-  <img src="docs/assets/readme/homepage-categories.png" alt="YallaMarket homepage" width="850">
+  <img src="docs/assets/readme/homepage-full.png" alt="YallaMarket homepage full page" width="900">
 </p>
 
 <p align="center">
@@ -89,10 +89,6 @@ The project was developed as part of a **Software Engineering** course using an 
 
 ## Screenshots
 
-### Homepage
-
-<img src="docs/assets/readme/homepage-full.png" alt="YallaMarket homepage full page" width="900">
-
 ### Category & Product Browsing
 
 <img src="docs/assets/readme/category-products.png" alt="YallaMarket category products page" width="900">
@@ -109,18 +105,18 @@ The project was developed as part of a **Software Engineering** course using an 
 
 ## Technology Stack
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Frontend | React | UI components and state-driven rendering |
-| Build Tool | Vite | Fast development and production build |
-| Styling | Tailwind CSS | Responsive utility-first design |
-| Routing | React Router | Client-side navigation |
-| State Management | Context API | Cart, language, and authentication state |
-| Backend | Express.js | REST API and server-side logic |
-| Database | SQLite | Lightweight relational persistence |
-| Authentication | JWT + bcrypt | Secure login and password hashing |
-| Project Management | Jira | Agile backlog, sprints, bugs, and tasks |
-| Version Control | Git + GitHub | Collaboration and code history |
+| Layer              | Technology   | Purpose                                  |
+| ------------------ | ------------ | ---------------------------------------- |
+| Frontend           | React        | UI components and state-driven rendering |
+| Build Tool         | Vite         | Fast development and production build    |
+| Styling            | Tailwind CSS | Responsive utility-first design          |
+| Routing            | React Router | Client-side navigation                   |
+| State Management   | Context API  | Cart, language, and authentication state |
+| Backend            | Express.js   | REST API and server-side logic           |
+| Database           | SQLite       | Lightweight relational persistence       |
+| Authentication     | JWT + bcrypt | Secure login and password hashing        |
+| Project Management | Jira         | Agile backlog, sprints, bugs, and tasks  |
+| Version Control    | Git + GitHub | Collaboration and code history           |
 
 ---
 
@@ -265,30 +261,30 @@ CLIENT_URL=http://localhost:5173
 
 ## API Overview
 
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| `GET` | `/api/health` | Check API health | No |
-| `POST` | `/api/auth/register` | Register a new user | No |
-| `POST` | `/api/auth/login` | Login and receive JWT | No |
-| `POST` | `/api/auth/logout` | Logout response / client token clearing | Optional |
-| `GET` | `/api/categories` | Get all categories | No |
-| `GET` | `/api/categories/:id` | Get category by ID | No |
-| `GET` | `/api/categories/slug/:slug` | Get category by slug | No |
-| `POST` | `/api/categories` | Create category | Admin |
-| `PUT` | `/api/categories/:id` | Update category | Admin |
-| `DELETE` | `/api/categories/:id` | Delete category | Admin |
-| `GET` | `/api/products` | List/search products | No |
-| `GET` | `/api/products/:id` | Get product details | No |
-| `GET` | `/api/products/related/:id` | Get related products | No |
-| `POST` | `/api/products` | Create product | Admin |
-| `PUT` | `/api/products/:id` | Update product | Admin |
-| `DELETE` | `/api/products/:id` | Delete product | Admin |
-| `POST` | `/api/orders` | Submit checkout order | User |
-| `GET` | `/api/orders/my` | Get current user orders | User |
-| `GET` | `/api/orders` | Get all orders | Admin |
-| `GET` | `/api/orders/:id` | Get order details | Owner/Admin |
-| `PUT` | `/api/orders/:id/status` | Update order status | Admin |
-| `GET` | `/api/admin/dashboard/stats` | Get dashboard statistics | Admin |
+| Method   | Endpoint                     | Description                             | Auth Required |
+| -------- | ---------------------------- | --------------------------------------- | ------------- |
+| `GET`    | `/api/health`                | Check API health                        | No            |
+| `POST`   | `/api/auth/register`         | Register a new user                     | No            |
+| `POST`   | `/api/auth/login`            | Login and receive JWT                   | No            |
+| `POST`   | `/api/auth/logout`           | Logout response / client token clearing | Optional      |
+| `GET`    | `/api/categories`            | Get all categories                      | No            |
+| `GET`    | `/api/categories/:id`        | Get category by ID                      | No            |
+| `GET`    | `/api/categories/slug/:slug` | Get category by slug                    | No            |
+| `POST`   | `/api/categories`            | Create category                         | Admin         |
+| `PUT`    | `/api/categories/:id`        | Update category                         | Admin         |
+| `DELETE` | `/api/categories/:id`        | Delete category                         | Admin         |
+| `GET`    | `/api/products`              | List/search products                    | No            |
+| `GET`    | `/api/products/:id`          | Get product details                     | No            |
+| `GET`    | `/api/products/related/:id`  | Get related products                    | No            |
+| `POST`   | `/api/products`              | Create product                          | Admin         |
+| `PUT`    | `/api/products/:id`          | Update product                          | Admin         |
+| `DELETE` | `/api/products/:id`          | Delete product                          | Admin         |
+| `POST`   | `/api/orders`                | Submit checkout order                   | User          |
+| `GET`    | `/api/orders/my`             | Get current user orders                 | User          |
+| `GET`    | `/api/orders`                | Get all orders                          | Admin         |
+| `GET`    | `/api/orders/:id`            | Get order details                       | Owner/Admin   |
+| `PUT`    | `/api/orders/:id/status`     | Update order status                     | Admin         |
+| `GET`    | `/api/admin/dashboard/stats` | Get dashboard statistics                | Admin         |
 
 ---
 
@@ -360,22 +356,22 @@ The project includes manual QA documentation covering the most important user an
 
 ### QA Summary
 
-| Area | Result |
-|---|---|
-| Manual test cases | Completed |
+| Area               | Result    |
+| ------------------ | --------- |
+| Manual test cases  | Completed |
 | Functional testing | Completed |
-| UI testing | Completed |
-| Jira bug tracking | Completed |
-| Final QA sprint | Completed |
+| UI testing         | Completed |
+| Jira bug tracking  | Completed |
+| Final QA sprint    | Completed |
 
 ### Resolved Final QA Bugs
 
-| Jira Key | Summary | Status |
-|---|---|---|
-| `SCRUM-127` | Cart total did not update immediately after quantity changes | Done |
-| `SCRUM-128` | Checkout validation messages were unclear for incomplete forms | Done |
-| `SCRUM-129` | Language direction was inconsistent after switching languages | Done |
-| `SCRUM-130` | Invalid product routes needed improved fallback handling | Done |
+| Jira Key    | Summary                                                        | Status |
+| ----------- | -------------------------------------------------------------- | ------ |
+| `SCRUM-127` | Cart total did not update immediately after quantity changes   | Done   |
+| `SCRUM-128` | Checkout validation messages were unclear for incomplete forms | Done   |
+| `SCRUM-129` | Language direction was inconsistent after switching languages  | Done   |
+| `SCRUM-130` | Invalid product routes needed improved fallback handling       | Done   |
 
 ---
 
@@ -449,23 +445,23 @@ The current project version is suitable for academic submission and demonstratio
 
 ## Team
 
-| Name | Role / Contribution |
-|---|---|
-| Baraa Masri | Scrum Master, frontend/backend, QA, Jira/GitHub documentation |
-| Hamed Bizreh | Development, backend/API, diagrams, testing support |
-| Yahya Ziyoud | Development, database/API, diagrams, testing support |
+| Name         | Role / Contribution                                           |
+| ------------ | ------------------------------------------------------------- |
+| Baraa Masri  | Scrum Master, frontend/backend, QA, Jira/GitHub documentation |
+| Hamed Bizreh | Development, backend/API, diagrams, testing support           |
+| Yahya Ziyoud | Development, database/API, diagrams, testing support          |
 
 ---
 
 ## Course Information
 
-| Field | Value |
-|---|---|
-| Course | Software Engineering |
-| Major | Computer Science Apprenticeship |
-| University | An-Najah National University |
-| Instructor | Dr. Firas Shakaa |
-| Semester | Second Semester |
+| Field      | Value                           |
+| ---------- | ------------------------------- |
+| Course     | Software Engineering            |
+| Major      | Computer Science Apprenticeship |
+| University | An-Najah National University    |
+| Instructor | Dr. Firas Shakaa                |
+| Semester   | Second Semester                 |
 
 ---
 
