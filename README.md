@@ -252,7 +252,23 @@ Example:
 PORT=5000
 NODE_ENV=development
 JWT_SECRET=replace_this_with_a_secure_secret
-CLIENT_URL=http://localhost:5173
+CLIENT_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://yalla-market-62jk.vercel.app
+```
+
+Create a `.env` file inside the `client/` directory when you need the frontend to call a deployed API directly.
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+For the current production deployment, configure:
+
+```env
+# Vercel frontend
+VITE_API_URL=https://yallamarket.onrender.com
+
+# Render backend
+CLIENT_ORIGINS=https://yalla-market-62jk.vercel.app
 ```
 
 > Do not commit real secrets to GitHub. Use `.env.example` for shared configuration examples.
