@@ -1,0 +1,251 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram id="YeP4XfYFotzgG2ajzRs4" name="Page-1">
+    <mxGraphModel dx="2316" dy="1391" grid="0" gridSize="10" guides="1" tooltips="1" connect="0" arrows="1" fold="0" page="0" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_bg" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="" vertex="1">
+          <mxGeometry height="55" width="1560" x="20" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="title_text" parent="1" style="text;html=1;align=center;fontStyle=1;fontSize=14;fontColor=#000000;fillColor=none;strokeColor=none;" value="YallaMarket — Language Switch Flow Sequence Diagram" vertex="1">
+          <mxGeometry height="25" width="1560" x="20" y="18" as="geometry" />
+        </mxCell>
+        <mxCell id="title_sub" parent="1" style="text;html=1;align=center;fontSize=14;fontColor=#000000;fillColor=none;strokeColor=none;" value="«UML Sequence Diagram»  |  React Context API + localStorage  |  Client-Side Only — No Backend Interaction" vertex="1">
+          <mxGeometry height="18" width="1560" x="20" y="43" as="geometry" />
+        </mxCell>
+        <mxCell id="ll_user_box" parent="1" style="shape=mxgraph.uml.lifeline;whiteSpace=wrap;html=1;fillColor=#2C5F8A;strokeColor=#1A3D5C;fontColor=#000000;fontSize=14;fontStyle=1;perimeter=mxPerimeter.RectanglePerimeter;portConstraint=fixed;" value=":User" vertex="1">
+          <mxGeometry height="55" width="150" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ll_rc_box" parent="1" style="shape=mxgraph.uml.lifeline;whiteSpace=wrap;html=1;fillColor=#2C5F8A;strokeColor=#1A3D5C;fontColor=#000000;fontSize=14;fontStyle=1;perimeter=mxPerimeter.RectanglePerimeter;portConstraint=fixed;" value=":React Client" vertex="1">
+          <mxGeometry height="55" width="150" x="350" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ll_ctx_box" parent="1" style="shape=mxgraph.uml.lifeline;whiteSpace=wrap;html=1;fillColor=#1B6E4F;strokeColor=#134D38;fontColor=#000000;fontSize=14;fontStyle=1;perimeter=mxPerimeter.RectanglePerimeter;portConstraint=fixed;" value=":LanguageContext" vertex="1">
+          <mxGeometry height="55" width="165" x="660" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ll_ls_box" parent="1" style="shape=mxgraph.uml.lifeline;whiteSpace=wrap;html=1;fillColor=#7B3F00;strokeColor=#5A2D00;fontColor=#000000;fontSize=14;fontStyle=1;perimeter=mxPerimeter.RectanglePerimeter;portConstraint=fixed;" value=":localStorage" vertex="1">
+          <mxGeometry height="55" width="150" x="970" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ll_pc_box" parent="1" style="shape=mxgraph.uml.lifeline;whiteSpace=wrap;html=1;fillColor=#5A2780;strokeColor=#3D1A59;fontColor=#000000;fontSize=14;fontStyle=1;perimeter=mxPerimeter.RectanglePerimeter;portConstraint=fixed;" value=":Page Components" vertex="1">
+          <mxGeometry height="55" width="165" x="1290" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="vl_user" edge="1" parent="1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#999999;strokeWidth=1.5;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="155" y="135" as="sourcePoint" />
+            <mxPoint x="155" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vl_rc" edge="1" parent="1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#999999;strokeWidth=1.5;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425" y="135" as="sourcePoint" />
+            <mxPoint x="425" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vl_ctx" edge="1" parent="1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#999999;strokeWidth=1.5;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="742" y="135" as="sourcePoint" />
+            <mxPoint x="742" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vl_ls" edge="1" parent="1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#999999;strokeWidth=1.5;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="135" as="sourcePoint" />
+            <mxPoint x="1045" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vl_pc" edge="1" parent="1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#999999;strokeWidth=1.5;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1372" y="135" as="sourcePoint" />
+            <mxPoint x="1372" y="1060" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="act_rc" parent="1" style="fillColor=#D4E6F1;strokeColor=#2C5F8A;strokeWidth=1;fontColor=#000000;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="785" width="18" x="416" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="act_ctx" parent="1" style="fillColor=#C8E6C9;strokeColor=#1B6E4F;strokeWidth=1;fontColor=#000000;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="565" width="18" x="733" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="act_ls" parent="1" style="fillColor=#FFE0B2;strokeColor=#7B3F00;strokeWidth=1;fontColor=#000000;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="80" width="18" x="1036" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="act_pc" parent="1" style="fillColor=#E1BEE7;strokeColor=#5A2780;strokeWidth=1;fontColor=#000000;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="100" width="18" x="1363" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="msg1" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1A2B4A;strokeWidth=1.8;fontSize=14;fontStyle=0;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#000000;" value="Click language switch button">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="155" y="195" as="sourcePoint" />
+            <mxPoint x="416" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step1" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="183" as="geometry" />
+        </mxCell>
+        <mxCell id="msg2" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1A2B4A;strokeWidth=1.8;fontSize=14;fontStyle=0;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#000000;" value="switchLanguage(selectedLanguage)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="434" y="255" as="sourcePoint" />
+            <mxPoint x="733" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step2" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="2" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="243" as="geometry" />
+        </mxCell>
+        <mxCell id="msg3" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1B6E4F;strokeWidth=1.6;fontSize=14;fontStyle=0;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontColor=#000000;" value="Update selected language state">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="340" />
+              <mxPoint x="800" y="380" />
+            </Array>
+            <mxPoint x="751" y="340" as="sourcePoint" />
+            <mxPoint x="751" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg3_lbl" parent="1" style="text;html=1;align=left;fontSize=14;fillColor=#FFFFFF;strokeColor=none;fontColor=#000000;" value="Update selected language state" vertex="1">
+          <mxGeometry height="24" width="200" x="808" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="step3" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="3" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="msg4" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1A2B4A;strokeWidth=1.8;fontSize=14;fontStyle=0;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#000000;" value="setItem(&quot;language&quot;, selectedLanguage)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="751" y="490" as="sourcePoint" />
+            <mxPoint x="1036" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step4" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="4" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="478" as="geometry" />
+        </mxCell>
+        <mxCell id="msg5" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;dashed=1;strokeColor=#555555;strokeWidth=1.5;fontSize=14;fontStyle=2;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#000000;" value="Preference saved ✓">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1036" y="570" as="sourcePoint" />
+            <mxPoint x="751" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step5" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="5" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="558" as="geometry" />
+        </mxCell>
+        <mxCell id="alt_box" parent="1" style="points=[[0,0],[0.05,0],[0.05,0.12],[0,0.12]];shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fontSize=14;fillColor=#EEF4FB;strokeColor=#2C5F8A;strokeWidth=2;fontColor=#000000;" value="" vertex="1">
+          <mxGeometry height="240" width="1500" x="60" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="alt_label" parent="1" style="shape=mxgraph.uml.uml2_combined_fragment_operator;whiteSpace=wrap;html=1;fillColor=#2C5F8A;fontColor=#000000;strokeColor=#1A3D5C;fontSize=14;fontStyle=1;" value="alt" vertex="1">
+          <mxGeometry height="30" width="60" x="60" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="alt_guard1" parent="1" style="text;html=1;align=left;fontSize=14;fontStyle=1;fontColor=#000000;fillColor=none;strokeColor=none;" value="[Arabic selected]" vertex="1">
+          <mxGeometry height="24" width="200" x="130" y="618" as="geometry" />
+        </mxCell>
+        <mxCell id="msg6a_arrow" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1B6E4F;strokeWidth=1.6;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="663" />
+              <mxPoint x="800" y="700" />
+            </Array>
+            <mxPoint x="751" y="663" as="sourcePoint" />
+            <mxPoint x="751" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg6a_lbl" parent="1" style="text;html=1;align=left;fontSize=14;fillColor=#FFFFFF;strokeColor=none;fontColor=#000000;" value="Set language = &quot;ar&quot;  |  document.dir = &quot;rtl&quot;" vertex="1">
+          <mxGeometry height="24" width="280" x="808" y="668" as="geometry" />
+        </mxCell>
+        <mxCell id="step6a" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="6a" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="651" as="geometry" />
+        </mxCell>
+        <mxCell id="alt_divider" edge="1" parent="1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#2C5F8A;strokeWidth=1.5;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="735" as="sourcePoint" />
+            <mxPoint x="1560" y="735" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="alt_guard2" parent="1" style="text;html=1;align=left;fontSize=14;fontStyle=1;fontColor=#000000;fillColor=none;strokeColor=none;" value="[English selected]" vertex="1">
+          <mxGeometry height="24" width="200" x="130" y="738" as="geometry" />
+        </mxCell>
+        <mxCell id="msg6b_arrow" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1B6E4F;strokeWidth=1.6;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="775" />
+              <mxPoint x="800" y="812" />
+            </Array>
+            <mxPoint x="751" y="775" as="sourcePoint" />
+            <mxPoint x="751" y="812" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg6b_lbl" parent="1" style="text;html=1;align=left;fontSize=14;fillColor=#FFFFFF;strokeColor=none;fontColor=#000000;" value="Set language = &quot;en&quot;  |  document.dir = &quot;ltr&quot;" vertex="1">
+          <mxGeometry height="24" width="280" x="808" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="step6b" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="6b" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="763" as="geometry" />
+        </mxCell>
+        <mxCell id="msg7" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#1A2B4A;strokeWidth=1.8;fontSize=14;fontStyle=0;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#000000;" value="Notify language state change (context re-render)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="751" y="875" as="sourcePoint" />
+            <mxPoint x="1363" y="875" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step7" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="7" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="863" as="geometry" />
+        </mxCell>
+        <mxCell id="msg8_arrow" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;strokeColor=#5A2780;strokeWidth=1.6;fontColor=#000000;fontSize=14;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1430" y="920" />
+              <mxPoint x="1430" y="957" />
+            </Array>
+            <mxPoint x="1381" y="920" as="sourcePoint" />
+            <mxPoint x="1381" y="957" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg8_lbl" parent="1" style="text;html=1;align=left;fontSize=14;fillColor=#FFFFFF;strokeColor=none;fontColor=#000000;" value="Re-render translated UI &amp;amp; layout direction" vertex="1">
+          <mxGeometry height="24" width="260" x="1438" y="925" as="geometry" />
+        </mxCell>
+        <mxCell id="step8" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="8" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="908" as="geometry" />
+        </mxCell>
+        <mxCell id="msg9" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=1;dashed=1;strokeColor=#555555;strokeWidth=1.5;fontSize=14;fontStyle=2;edgeLabel=html;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#000000;" value="Display updated language layout">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="416" y="990" as="sourcePoint" />
+            <mxPoint x="155" y="990" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step9" parent="1" style="ellipse;fillColor=#1A2B4A;strokeColor=#1A2B4A;fontColor=#000000;fontSize=14;fontStyle=1;" value="9" vertex="1">
+          <mxGeometry height="22" width="22" x="30" y="978" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_box" parent="1" style="rounded=1;fillColor=#F8F9FA;strokeColor=#BBBBBB;strokeWidth=1;fontColor=#000000;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="95" width="680" x="60" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" parent="1" style="text;html=1;fontSize=14;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#000000;" value="Legend" vertex="1">
+          <mxGeometry height="20" width="80" x="70" y="1055" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_solid" edge="1" parent="1" style="edgeStyle=none;html=1;endArrow=open;endFill=1;strokeColor=#1A2B4A;strokeWidth=1.8;fontSize=14;fontColor=#000000;" value="= Synchronous call">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="70" y="1085" as="sourcePoint" />
+            <mxPoint x="160" y="1085" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_solid_lbl" parent="1" style="text;html=1;fontSize=14;fillColor=none;strokeColor=none;fontColor=#000000;" value="= Synchronous call" vertex="1">
+          <mxGeometry height="20" width="150" x="165" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_dashed" edge="1" parent="1" style="edgeStyle=none;html=1;endArrow=open;endFill=1;dashed=1;strokeColor=#555555;strokeWidth=1.5;fontSize=14;fontColor=#000000;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="70" y="1108" as="sourcePoint" />
+            <mxPoint x="160" y="1108" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_dashed_lbl" parent="1" style="text;html=1;fontSize=14;fillColor=none;strokeColor=none;fontColor=#000000;" value="= Return / response message" vertex="1">
+          <mxGeometry height="20" width="200" x="165" y="1098" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_act" parent="1" style="fillColor=#D4E6F1;strokeColor=#2C5F8A;strokeWidth=1;fontColor=#000000;fontSize=14;" value="" vertex="1">
+          <mxGeometry height="16" width="18" x="70" y="1122" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_act_lbl" parent="1" style="text;html=1;fontSize=14;fillColor=none;strokeColor=none;fontColor=#000000;" value="= Activation bar (lifeline is active/processing)" vertex="1">
+          <mxGeometry height="20" width="300" x="95" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_alt" parent="1" style="text;html=1;fontSize=14;fontStyle=1;fillColor=#EEF4FB;strokeColor=#2C5F8A;strokeWidth=1;fontColor=#000000;" value="alt" vertex="1">
+          <mxGeometry height="22" width="45" x="380" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_alt_lbl" parent="1" style="text;html=1;fontSize=14;fillColor=none;strokeColor=none;fontColor=#000000;" value="= Combined fragment (alternate branches)" vertex="1">
+          <mxGeometry height="20" width="280" x="432" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" parent="1" style="text;html=1;align=center;fontSize=14;fontColor=#000000;fontStyle=2;fillColor=none;strokeColor=none;" value="YallaMarket  |  Language Switch Flow  |  Client-Side Only  |  No Express Server  |  No SQLite DB  |  React Context API + localStorage" vertex="1">
+          <mxGeometry height="20" width="1560" x="20" y="1150" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

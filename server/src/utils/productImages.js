@@ -70,10 +70,18 @@ const PRODUCT_QUERY_RULES = [
   { keys: ['crackers', 'بسكويت مالح'], query: 'salty,crackers,snack' },
 ];
 
+const CANVA_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Canva_Logo.png';
+
 export function resolveProductImage(product) {
   const current = String(product?.image || '').trim();
   if (current && !imageNeedsReplacement(current)) {
     return current;
+  }
+
+  // If the product appears to be a Canva subscription/product, use the Canva logo image.
+  const nameText = String([product?.name_en, product?.name].filter(Boolean).join(' ')).toLowerCase();
+  if (nameText.includes('canva')) {
+    return CANVA_LOGO_URL;
   }
 
   const query = findProductQuery(product) || getCategoryFallbackQuery(product?.category_id ?? product?.categoryId);
