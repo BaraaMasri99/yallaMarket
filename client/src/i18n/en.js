@@ -27,7 +27,7 @@ const en = {
       'Browse game cards, subscriptions, mobile balance, and digital gift products quickly and easily.',
     searchPlaceholder: 'Search for a product...',
     searchBtn: 'Search',
-    noResults: 'No categories match your search',
+    noResults: 'No products match your search',
     clearSearch: 'Clear search',
   },
 

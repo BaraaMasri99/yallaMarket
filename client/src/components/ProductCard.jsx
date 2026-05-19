@@ -6,9 +6,8 @@ import { useLanguage } from '../context/LanguageContext';
 import {
   formatPrice,
   getDisplayName,
-  getProductImageFallback,
-  getProductEmoji,
 } from '../utils/helpers';
+import ProductImage from './ProductImage';
 
 /**
  * Product card used in category pages and related products.
@@ -19,7 +18,6 @@ export default function ProductCard({ product }) {
   const [added, setAdded] = useState(false);
 
   const displayName = getDisplayName(product, locale);
-  const emoji = getProductEmoji(product);
 
   const handleAdd = (e) => {
     e.preventDefault(); // don't navigate
@@ -37,23 +35,12 @@ export default function ProductCard({ product }) {
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-stone-100">
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={displayName}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
-            onError={(event) => {
-              event.currentTarget.onerror = null;
-              event.currentTarget.src = getProductImageFallback(product);
-            }}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-5xl transition-transform duration-500 group-hover:scale-110">
-            <span aria-hidden="true">{emoji}</span>
-          </div>
-        )}
-
+        <ProductImage
+          product={product}
+          locale={locale}
+          className="h-full w-full transition-transform duration-500 group-hover:scale-110"
+          imageClassName="transition-transform duration-500"
+        />
         {/* Badge */}
         {product.badge && (
           <span className="absolute top-2.5 start-2.5 rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white shadow-sm">

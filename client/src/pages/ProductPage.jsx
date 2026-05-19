@@ -9,11 +9,10 @@ import {
   getDisplayCategoryName,
   getDisplayDescription,
   getDisplayName,
-  getProductImageFallback,
-  getProductEmoji,
 } from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
 import ProductCard from '../components/ProductCard';
+import ProductImage from '../components/ProductImage';
 import QuantitySelector from '../components/QuantitySelector';
 import BackLink from '../components/BackLink';
 import Spinner from '../components/Spinner';
@@ -129,7 +128,6 @@ export default function ProductPage() {
   const displayName = getDisplayName(product, locale);
   const displayDesc = getDisplayDescription(product, locale);
   const categoryName = getDisplayCategoryName(category, locale);
-  const emoji = getProductEmoji(product);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
@@ -156,21 +154,13 @@ export default function ProductPage() {
       <div className="mt-6 grid gap-8 md:grid-cols-2">
         {/* Image */}
         <div className="relative overflow-hidden rounded-3xl border border-stone-200/80 bg-stone-50 shadow-sm">
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={displayName}
-              className="aspect-square w-full object-cover"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = getProductImageFallback(product);
-              }}
-            />
-          ) : (
-            <div className="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-7xl md:text-8xl">
-              <span aria-hidden="true">{emoji}</span>
-            </div>
-          )}
+          <ProductImage
+            product={product}
+            locale={locale}
+            className="aspect-square w-full"
+            iconClassName="h-24 w-24 rounded-3xl text-7xl"
+            labelClassName="mt-5 max-w-[80%] text-xl"
+          />
           {product.badge && (
             <span className="absolute top-4 start-4 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-white shadow-md">
               {product.badge}

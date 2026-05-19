@@ -4,10 +4,9 @@ import { useLanguage } from '../context/LanguageContext';
 import {
   formatPrice,
   getDisplayName,
-  getProductImageFallback,
-  getProductEmoji,
 } from '../utils/helpers';
 import QuantitySelector from './QuantitySelector';
+import ProductImage from './ProductImage';
 
 /**
  * Single cart item row used in CartPage.
@@ -17,28 +16,17 @@ export default function CartItem({ item }) {
   const { t, locale } = useLanguage();
 
   const displayName = getDisplayName(item, locale);
-  const emoji = getProductEmoji(item);
 
   return (
     <div className="flex items-start gap-4 rounded-2xl border border-stone-200/80 bg-white p-4 shadow-sm transition hover:shadow-card">
       {/* Thumbnail */}
-      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-stone-100">
-        {item.image ? (
-          <img
-            src={item.image}
-            alt={displayName}
-            className="h-full w-full object-cover"
-            onError={(event) => {
-              event.currentTarget.onerror = null;
-              event.currentTarget.src = getProductImageFallback(item);
-            }}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-3xl">
-            <span aria-hidden="true">{emoji}</span>
-          </div>
-        )}
-      </div>
+      <ProductImage
+        product={item}
+        locale={locale}
+        className="h-20 w-20 shrink-0 rounded-xl"
+        iconClassName="h-10 w-10 rounded-xl text-2xl"
+        labelClassName=""
+      />
 
       {/* Details */}
       <div className="flex flex-1 flex-col gap-2">

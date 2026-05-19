@@ -12,12 +12,12 @@ import { useLanguage } from '../context/LanguageContext';
 import {
   formatPrice,
   getDisplayName,
-  getProductEmoji,
 } from '../utils/helpers';
 import Breadcrumb from '../components/Breadcrumb';
 import OrderSummary from '../components/OrderSummary';
 import BackLink from '../components/BackLink';
 import Spinner from '../components/Spinner';
+import ProductImage from '../components/ProductImage';
 import { createOrder } from '../services/orderService';
 
 export default function CheckoutPage() {
@@ -281,19 +281,13 @@ export default function CheckoutPage() {
             <div className="mt-5 max-h-60 space-y-3 overflow-y-auto border-b border-stone-100 pb-4 mb-[-20px]">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 text-sm">
-                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                    {item.image ? (
-                      <img
-                        src={item.image}
-                        alt={getDisplayName(item, locale)}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-stone-50 to-amber-50 text-xl">
-                        <span aria-hidden="true">{getProductEmoji(item)}</span>
-                      </div>
-                    )}
-                  </div>
+                  <ProductImage
+                    product={item}
+                    locale={locale}
+                    className="h-10 w-10 shrink-0 rounded-lg"
+                    iconClassName="h-6 w-6 rounded-lg text-base"
+                    labelClassName=""
+                  />
                   <div className="flex-1 truncate text-stone-700">
                     {getDisplayName(item, locale)} × {item.qty}
                   </div>

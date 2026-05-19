@@ -10,9 +10,11 @@ import {
   X,
 } from 'lucide-react';
 import CategoryCard from '../components/CategoryCard';
+import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
 import { useLanguage } from '../context/LanguageContext';
 import { getAllCategories } from '../services/categoryService';
+import { getAllProducts } from '../services/productService';
 import { normalizeSearchText } from '../utils/helpers';
 
 /* ─── component ─── */
@@ -20,6 +22,7 @@ import { normalizeSearchText } from '../utils/helpers';
 export default function Home() {
   const { t } = useLanguage();
   const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,8 +33,14 @@ export default function Home() {
       setLoading(true);
       setError('');
       try {
-        const cats = await getAllCategories();
-        if (!cancelled) setCategories(cats);
+        const [cats, allProducts] = await Promise.all([
+          getAllCategories(),
+          getAllProducts(),
+        ]);
+        if (!cancelled) {
+          setCategories(cats);
+          setProducts(allProducts);
+        }
       } catch {
         if (!cancelled) setError(t('general.error'));
       } finally {
@@ -41,17 +50,21 @@ export default function Home() {
     return () => { cancelled = true; };
   }, [t]);
 
-  // Filter categories by search query (matches name or nameEn)
-  const filteredCategories = useMemo(() => {
-    if (!searchQuery.trim()) return categories;
+  const isSearching = searchQuery.trim().length > 0;
+
+  const filteredProducts = useMemo(() => {
+    if (!isSearching) return [];
     const q = normalizeSearchText(searchQuery);
-    return categories.filter(
-      (cat) =>
-        normalizeSearchText(cat.name).includes(q) ||
-        normalizeSearchText(cat.nameEn).includes(q) ||
-        normalizeSearchText(cat.name_en).includes(q)
+    return products.filter(
+      (product) =>
+        normalizeSearchText(product.name).includes(q) ||
+        normalizeSearchText(product.nameEn).includes(q) ||
+        normalizeSearchText(product.name_en).includes(q) ||
+        normalizeSearchText(product.description).includes(q) ||
+        normalizeSearchText(product.descriptionEn).includes(q) ||
+        normalizeSearchText(product.description_en).includes(q)
     );
-  }, [categories, searchQuery]);
+  }, [isSearching, products, searchQuery]);
 
   const highlights = [
     {
@@ -137,10 +150,10 @@ export default function Home() {
       <section id="categories" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-10 md:px-6 md:py-16">
         <div className="mb-8 text-center md:text-start">
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-primary">
-            {t('categories.sectionLabel')}
+            {isSearching ? t('nav.search') : t('categories.sectionLabel')}
           </p>
           <h2 className="mt-2 text-3xl font-black">
-            {t('categories.sectionTitle')}
+            {isSearching ? searchQuery : t('categories.sectionTitle')}
           </h2>
         </div>
 
@@ -150,9 +163,15 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <p className="text-stone-500">{error}</p>
           </div>
-        ) : filteredCategories.length > 0 ? (
+        ) : isSearching && filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {filteredCategories.map((cat) => (
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : !isSearching && categories.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {categories.map((cat) => (
               <CategoryCard key={cat.id} category={cat} />
             ))}
           </div>
