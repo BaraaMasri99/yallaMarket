@@ -252,6 +252,7 @@ Example:
 PORT=5000
 NODE_ENV=development
 JWT_SECRET=replace_this_with_a_secure_secret
+DATABASE_PATH=./data/yalla-market.sqlite
 CLIENT_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://yalla-market-62jk.vercel.app
 ```
 
@@ -269,7 +270,10 @@ VITE_API_URL=https://yallamarket.onrender.com
 
 # Render backend
 CLIENT_ORIGINS=https://yalla-market-62jk.vercel.app
+DATABASE_PATH=./data/yalla-market.sqlite
 ```
+
+The backend auto-creates tables and seeds demo catalog data on startup only when `categories` or `products` are empty. This keeps `/api/products` and `/api/categories` populated on fresh Render instances while avoiding duplicate inserts on restarts.
 
 > Do not commit real secrets to GitHub. Use `.env.example` for shared configuration examples.
 

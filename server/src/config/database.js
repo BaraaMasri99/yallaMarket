@@ -1,9 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { env } from './env.js';
 
-const databaseFile = path.resolve(process.cwd(), env.databasePath);
+const currentFile = fileURLToPath(import.meta.url);
+const currentDirectory = path.dirname(currentFile);
+const serverRoot = path.resolve(currentDirectory, '..', '..');
+const databaseFile = path.isAbsolute(env.databasePath)
+  ? env.databasePath
+  : path.resolve(serverRoot, env.databasePath);
 const databaseDirectory = path.dirname(databaseFile);
 
 fs.mkdirSync(databaseDirectory, { recursive: true });
